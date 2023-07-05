@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/prelude/result.dart';
 
+import 'open_meteo/open_meteo_api.dart';
 import 'prelude/http.dart' as http;
+import 'prelude/http.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,13 +33,13 @@ class LocationsPage extends StatefulWidget {
 }
 
 class _LocationsPageState extends State<LocationsPage> {
-  String _searchResult = '';
-
+  late HttpFuture<List<Location>>? _searchFuture;
   late TextEditingController _searchTextEditController;
 
   @override
   void initState() {
     super.initState();
+    _searchFuture = null;
     _searchTextEditController = TextEditingController();
   }
 
@@ -48,16 +50,40 @@ class _LocationsPageState extends State<LocationsPage> {
   }
 
   Future<void> _startSearch(String value) async {
-    // TODO uri encode value
-
-    var apiResult = await http.sendRequest(http.HttpMethod.get,
-        Uri.parse('https://geocoding-api.open-meteo.com/v1/search?name=$value&count=10&language=en&format=json'));
-
-    var newSearchResult = apiResult.mapOk((response) => response.body).orElse((_) => 'There was an error');
-
     setState(() {
-      _searchResult = newSearchResult;
+      _searchFuture = searchLocation(value);
     });
+  }
+
+  Widget _singleSearchResultWidget(Location location) {
+    return Row(children: [
+      Text('${location.name}, ${location.region}'),
+    ]);
+  }
+
+  Widget _searchResultsWidget(List<Location> locations) {
+    return Column(
+      children: locations.map((location) => _singleSearchResultWidget(location)).toList(),
+    );
+  }
+
+  Widget _searchErrorWidget(HttpError error) => Text(error.message());
+
+  Widget _loadingWidget() => const SizedBox(width: 32, height: 32, child: CircularProgressIndicator());
+
+  Widget _searchResultsFutureWidget() {
+    if (_searchFuture == null) {
+      return const Text('');
+    }
+
+    return FutureBuilder(
+      future: _searchFuture!,
+      builder: (context, snapshot) => switch (snapshot.data) {
+        Ok(value: var locations) => _searchResultsWidget(locations),
+        Err(error: var err) => _searchErrorWidget(err),
+        null => _loadingWidget(),
+      },
+    );
   }
 
   @override
@@ -75,7 +101,7 @@ class _LocationsPageState extends State<LocationsPage> {
               controller: _searchTextEditController,
               onSubmitted: (String value) => _startSearch(value),
             ),
-            Text('Search result: $_searchResult'),
+            _searchResultsFutureWidget(),
           ],
         ),
       ),
