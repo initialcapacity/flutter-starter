@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/prelude/result.dart';
+import 'package:http/http.dart';
 
 import 'open_meteo/open_meteo_api.dart';
 import 'prelude/http.dart' as http;
 import 'prelude/http.dart';
+
+class AppDependencies {
+  static final AppDependencies _shared = AppDependencies();
+  static AppDependencies? testOverrides;
+
+  factory AppDependencies() {
+    return testOverrides ?? _shared;
+  }
+
+  Client getHttpClient() => Client();
+}
 
 void main() {
   runApp(const MyApp());
@@ -55,7 +67,7 @@ class _LocationsPageState extends State<LocationsPage> {
     super.dispose();
   }
 
-  Future<void> _startSearch(String value) async {
+  void _startSearch(String value) {
     setState(() {
       _searchFuture = searchLocation(value);
     });
@@ -82,7 +94,10 @@ class _LocationsPageState extends State<LocationsPage> {
     );
   }
 
-  Widget _searchErrorWidget(HttpError error) => Text(error.message());
+  Widget _searchErrorWidget(HttpError error) => Container(
+        padding: const EdgeInsets.fromLTRB(0, 64, 0, 0),
+        child: Text(error.message()),
+      );
 
   Widget _loadingWidget() => Expanded(
         child: Column(

@@ -1,17 +1,17 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'result.freezed.dart';
 
 sealed class Result<T, E> {}
 
-@freezed
-class Ok<T, E> with _$Ok implements Result<T, E> {
-  const factory Ok(T value) = _Ok;
+class Ok<T, E> implements Result<T, E> {
+  const Ok(this.value);
+
+  final T value;
 }
 
-@freezed
-class Err<T, E> with _$Err implements Result<T, E> {
-  const factory Err(E error) = _Err;
+class Err<T, E> implements Result<T, E> {
+  const Err(this.error);
+
+  final E error;
 }
 
 extension ResultExtensions<T, E> on Result<T, E> {

@@ -27,43 +27,44 @@ class HttpConnectionError implements HttpError {
 }
 
 class HttpUnexpectedStatusCodeError implements HttpError {
-  const HttpUnexpectedStatusCodeError(this.expected, this.response);
+  const HttpUnexpectedStatusCodeError(this.expected, this.actual);
 
   final int expected;
-  final Response response;
+  final int actual;
 }
 
 class HttpDeserializationError implements HttpError {
-  const HttpDeserializationError(this.exception, this.response);
+  const HttpDeserializationError(this.exception, this.responseBody);
 
   final Exception exception;
-  final Response response;
+  final String responseBody;
 }
 
 extension HttpErrorMessage on HttpError {
-  String message() => switch (this) {
-        HttpConnectionError(exception: _) => 'There was an error connecting',
-        HttpUnexpectedStatusCodeError(expected: _, response: _) => 'Unexpected response from api',
-        HttpDeserializationError(exception: _) => 'Failed to parse response',
+  String message() =>
+      switch (this) {
+        HttpConnectionError() => 'There was an error connecting',
+        HttpUnexpectedStatusCodeError() => 'Unexpected response from api',
+        HttpDeserializationError() => 'Failed to parse response',
       };
 }
 
 typedef HttpResult<T> = Result<T, HttpError>;
 typedef HttpFuture<T> = Future<HttpResult<T>>;
 
-HttpFuture<Response> sendRequest(HttpMethod method, Uri url) async {
-  final client = Client();
+extension SendRequest on Client {
+  HttpFuture<Response> sendRequest(HttpMethod method, Uri url) async {
+    try {
+      final request = Request(method.toString(), url);
+      final streamedResponse = await send(request);
+      final response = await Response.fromStream(streamedResponse);
 
-  try {
-    final request = Request(method.toString(), url);
-    final streamedResponse = await client.send(request);
-    final response = await Response.fromStream(streamedResponse);
-
-    return Ok(response);
-  } on Exception catch (e) {
-    return Err(HttpConnectionError(e));
-  } finally {
-    client.close();
+      return Ok(response);
+    } on Exception catch (e) {
+      return Err(HttpConnectionError(e));
+    } finally {
+      close();
+    }
   }
 }
 
@@ -72,17 +73,17 @@ extension ResponseHandling on HttpResult<Response> {
         if (response.statusCode == expected) {
           return Ok(response);
         } else {
-          return Err(HttpUnexpectedStatusCodeError(expected, response));
+          return Err(HttpUnexpectedStatusCodeError(expected, response.statusCode));
         }
       });
 
-  HttpResult<T> tryParseJson<T>(T Function(Map<String, Object?>) decoder) => flatMapOk((response) {
+  Result<T, HttpError> tryParseJson<T>(T Function(Map<String, dynamic>) decoder) => flatMapOk((response) {
         try {
           var json = jsonDecode(response.body);
           var object = decoder(json);
           return Ok(object);
         } on Exception catch (e) {
-          return Err(HttpDeserializationError(e, response));
+          return Err(HttpDeserializationError(e, response.body));
         }
       });
 }

@@ -1,41 +1,29 @@
+import 'package:flutter_starter/main.dart';
 import 'package:flutter_starter/prelude/http.dart';
 import 'package:flutter_starter/prelude/http.dart' as http;
 import 'package:flutter_starter/prelude/result.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'open_meteo_api.freezed.dart';
-part 'open_meteo_api.g.dart';
+typedef Location = ({String name, String region, double latitude, double longitude});
 
-@freezed
-class Location with _$Location {
-  const factory Location({
-    required String name,
-    required double latitude,
-    required double longitude,
-    @JsonKey(name: 'admin1') required String region,
-  }) = _Location;
+Location _locationFromJson(Map<String, dynamic> json) => (
+      name: json['name'] as String,
+      region: json['admin1'] as String,
+      latitude: json['latitude'] as double,
+      longitude: json['longitude'] as double,
+    );
 
-  factory Location.fromJson(Map<String, Object?> json) => _$LocationFromJson(json);
-}
+typedef _LocationResults = ({List<Location> results});
 
-@freezed
-class _LocationResults with _$_LocationResults {
-  const factory _LocationResults({
-    required List<Location> results,
-  }) = __LocationResults;
+_LocationResults _locationResultsFromJson(Map<String, dynamic> json) =>
+    (results: (json['results'] as List<dynamic>).map((e) => _locationFromJson(e as Map<String, dynamic>)).toList());
 
-  factory _LocationResults.fromJson(Map<String, Object?> json) => _$_LocationResultsFromJson(json);
-}
+const apiUrl = 'https://geocoding-api.open-meteo.com';
 
 HttpFuture<List<Location>> searchLocation(String name) async {
   var nameParam = Uri.encodeComponent(name);
-  var url =
-      Uri.parse('https://geocoding-api.open-meteo.com/v1/search?name=$nameParam&count=10&language=en&format=json');
+  var url = Uri.parse('$apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
+  var client = AppDependencies().getHttpClient();
+  var httpResult = await client.sendRequest(HttpMethod.get, url);
 
-  var httpResult = await http.sendRequest(HttpMethod.get, url);
-
-  return httpResult
-      .expectStatusCode(200)
-      .tryParseJson<_LocationResults>(_LocationResults.fromJson)
-      .mapOk((it) => it.results);
+  return httpResult.expectStatusCode(200).tryParseJson(_locationResultsFromJson).mapOk((it) => it.results);
 }
