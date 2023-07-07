@@ -5,7 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_app_dependencies.dart';
 
 void main() {
-  final testDependencies = TestAppDependencies();
+  late TestAppDependencies testDependencies;
+
+  setUp(() {
+    testDependencies = TestAppDependencies();
+  });
 
   testWidgets('Search for locations', (WidgetTester tester) async {
     await tester.pumpWidget(const App());
@@ -34,5 +38,10 @@ void main() {
     expect(find.text('Louisville'), findsNWidgets(3));
     expect(find.text('Colorado'), findsOneWidget);
     expect(find.text('Kentucky'), findsOneWidget);
+
+    final lastRequest = testDependencies.lastRequest();
+    const expectedUrl =
+        'https://geocoding-api.open-meteo.com/v1/search?name=Louisville&count=10&language=en&format=json';
+    expect(lastRequest, equals((method: 'GET', url: expectedUrl, body: '')));
   });
 }
