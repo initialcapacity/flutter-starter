@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:http/http.dart';
 
+import 'json.dart';
 import 'result.dart';
 
 enum HttpMethod {
@@ -35,9 +34,9 @@ class HttpUnexpectedStatusCodeError implements HttpError {
 }
 
 class HttpDeserializationError implements HttpError {
-  const HttpDeserializationError(this.exception, this.responseBody);
+  const HttpDeserializationError(this.error, this.responseBody);
 
-  final Exception exception;
+  final TypeError error;
   final String responseBody;
 }
 
@@ -76,12 +75,12 @@ extension ResponseHandling on HttpResult<Response> {
         }
       });
 
-  Result<T, HttpError> tryParseJson<T>(T Function(Map<String, dynamic>) decoder) => flatMapOk((response) {
+  Result<T, HttpError> tryParseJson<T>(JsonDecode<T> decode) => flatMapOk((response) {
         try {
-          final json = jsonDecode(response.body);
-          final object = decoder(json);
+          final jsonObject = JsonObject.fromString(response.body);
+          final object = decode(jsonObject);
           return Ok(object);
-        } on Exception catch (e) {
+        } on TypeError catch (e) {
           return Err(HttpDeserializationError(e, response.body));
         }
       });

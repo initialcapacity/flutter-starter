@@ -14,6 +14,13 @@ void main() {
     ]
   };
 
+  final invalidResultsJson = {
+    'results': [
+      {'name': 1, 'region': 'Kentucky'},
+      {'name': 2, 'region': 'Colorado'},
+    ]
+  };
+
   setUp(() {
     testDependencies = TestAppDependencies();
   });
@@ -69,5 +76,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Unexpected response from api'), findsOneWidget);
+  });
+
+  testWidgets('Search for locations, on invalid json', (WidgetTester tester) async {
+    await tester.pumpWidget(const App());
+
+    testDependencies.stub((statusCode: 200, body: invalidResultsJson));
+
+    await tester.enterText(find.byType(TextField), 'Louisville');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Failed to parse response'), findsOneWidget);
   });
 }

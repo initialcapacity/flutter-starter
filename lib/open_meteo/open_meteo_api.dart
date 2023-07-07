@@ -1,27 +1,29 @@
 import 'package:flutter_starter/prelude/http.dart';
-import 'package:flutter_starter/prelude/result.dart';
+import 'package:flutter_starter/prelude/json.dart';
 import 'package:http/http.dart';
 
-typedef Location = ({String name, String region, double latitude, double longitude});
+class Location {
+  final String name;
+  final String region;
+  final double latitude;
+  final double longitude;
 
-Location _locationFromJson(Map<String, dynamic> json) => (
-      name: json['name'] as String,
-      region: json['admin1'] as String,
-      latitude: json['latitude'] as double,
-      longitude: json['longitude'] as double,
-    );
+  const Location({required this.name, required this.region, required this.latitude, required this.longitude});
 
-typedef _LocationResults = ({List<Location> results});
+  static Location fromJson(JsonObject json) => Location(
+        name: json.field('name'),
+        region: json.field('admin1'),
+        latitude: json.field('latitude'),
+        longitude: json.field('longitude'),
+      );
+}
 
-_LocationResults _locationResultsFromJson(Map<String, dynamic> json) =>
-    (results: (json['results'] as List<dynamic>).map((e) => _locationFromJson(e as Map<String, dynamic>)).toList());
+const _apiUrl = 'https://geocoding-api.open-meteo.com';
 
-const apiUrl = 'https://geocoding-api.open-meteo.com';
-
-HttpFuture<List<Location>> searchLocation(Client client, String name) async {
+HttpFuture<Iterable<Location>> searchLocation(Client client, String name) async {
   final nameParam = Uri.encodeComponent(name);
-  final url = Uri.parse('$apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
+  final url = Uri.parse('$_apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
   final httpResult = await client.sendRequest(HttpMethod.get, url);
 
-  return httpResult.expectStatusCode(200).tryParseJson(_locationResultsFromJson).mapOk((it) => it.results);
+  return httpResult.expectStatusCode(200).tryParseJson((json) => json.array('results', Location.fromJson));
 }
