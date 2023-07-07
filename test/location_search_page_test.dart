@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_app_dependencies.dart';
 
 void main() {
-  var testDependencies = TestAppDependencies();
+  final testDependencies = TestAppDependencies();
 
   testWidgets('Search for locations', (WidgetTester tester) async {
     await tester.pumpWidget(const App());

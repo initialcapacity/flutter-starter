@@ -19,9 +19,9 @@ _LocationResults _locationResultsFromJson(Map<String, dynamic> json) =>
 const apiUrl = 'https://geocoding-api.open-meteo.com';
 
 HttpFuture<List<Location>> searchLocation(Client client, String name) async {
-  var nameParam = Uri.encodeComponent(name);
-  var url = Uri.parse('$apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
-  var httpResult = await client.sendRequest(HttpMethod.get, url);
+  final nameParam = Uri.encodeComponent(name);
+  final url = Uri.parse('$apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
+  final httpResult = await client.sendRequest(HttpMethod.get, url);
 
   return httpResult.expectStatusCode(200).tryParseJson(_locationResultsFromJson).mapOk((it) => it.results);
 }

@@ -9,7 +9,7 @@ class AppDependencies {
   }
 
   T withHttpClient<T>(T Function(Client) block) {
-    var client = Client();
+    final client = Client();
     try {
       return block(client);
     } finally {

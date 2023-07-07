@@ -78,8 +78,8 @@ extension ResponseHandling on HttpResult<Response> {
 
   Result<T, HttpError> tryParseJson<T>(T Function(Map<String, dynamic>) decoder) => flatMapOk((response) {
         try {
-          var json = jsonDecode(response.body);
-          var object = decoder(json);
+          final json = jsonDecode(response.body);
+          final object = decoder(json);
           return Ok(object);
         } on Exception catch (e) {
           return Err(HttpDeserializationError(e, response.body));

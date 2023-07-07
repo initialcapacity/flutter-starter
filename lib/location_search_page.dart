@@ -31,8 +31,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-    var colorScheme = theme.colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,8 +66,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   }
 
   Widget _singleSearchResultWidget(BuildContext context, Location location) {
-    var theme = Theme.of(context);
-    var borderColor = theme.colorScheme.outline;
+    final theme = Theme.of(context);
+    final borderColor = theme.colorScheme.outline;
 
     return ListTile(
       title: Text(location.name),
@@ -110,9 +110,10 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
 
     return FutureBuilder(
       future: _searchFuture!,
-      builder: (context, snapshot) => switch (snapshot.data) {
-        Ok(value: var locations) => _searchResultsWidget(context, locations),
-        Err(error: var err) => _searchErrorWidget(err),
+      builder: (context, snapshot) =>
+      switch (snapshot.data) {
+        Ok(value: final locations) => _searchResultsWidget(context, locations),
+        Err(error: final err) => _searchErrorWidget(err),
         null => _loadingWidget(),
       },
     );
