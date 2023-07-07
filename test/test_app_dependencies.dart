@@ -16,7 +16,7 @@ class TestAppDependencies implements AppDependencies {
   TestHttpResponse _response = (statusCode: 503, body: {'error': 'Response not stubbed'});
 
   @override
-  Client getHttpClient() => httpClient;
+  T withHttpClient<T>(T Function(Client) block) => block(httpClient);
 
   void stub(TestHttpResponse response) {
     _response = response;

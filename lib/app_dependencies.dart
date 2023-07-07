@@ -8,5 +8,12 @@ class AppDependencies {
     return testOverrides ?? _shared;
   }
 
-  Client getHttpClient() => Client();
+  T withHttpClient<T>(T Function(Client) block) {
+    var client = Client();
+    try {
+      return block(client);
+    } finally {
+      client.close();
+    }
+  }
 }

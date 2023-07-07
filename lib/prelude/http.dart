@@ -63,8 +63,6 @@ extension SendRequest on Client {
       return Ok(response);
     } on Exception catch (e) {
       return Err(HttpConnectionError(e));
-    } finally {
-      close();
     }
   }
 }

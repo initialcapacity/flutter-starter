@@ -59,8 +59,9 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
 
   void _startSearch(String value) {
     setState(() {
-      var client = AppDependencies().getHttpClient();
-      _searchFuture = searchLocation(client, value);
+      AppDependencies().withHttpClient((client) {
+        _searchFuture = searchLocation(client, value);
+      });
     });
   }
 
