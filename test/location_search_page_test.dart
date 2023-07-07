@@ -8,7 +8,7 @@ void main() {
   var testDependencies = TestAppDependencies();
 
   testWidgets('Search for locations', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const App());
 
     expect(find.byType(TextField), findsOneWidget);
 
@@ -17,12 +17,7 @@ void main() {
       body: {
         'results': [
           {'name': 'Louisville', 'admin1': 'Kentucky', 'latitude': 38.25424, 'longitude': -85.75941},
-          {
-            'name': 'Louisville',
-            'admin1': 'Colorado',
-            'latitude': 38.77227,
-            'longitude': -88.50255,
-          },
+          {'name': 'Louisville', 'admin1': 'Colorado', 'latitude': 38.77227, 'longitude': -88.50255},
         ]
       }
     ));

@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_starter/prelude/result.dart';
 import 'package:http/http.dart';
+
+import 'result.dart';
 
 enum HttpMethod {
   get,

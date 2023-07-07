@@ -1,7 +1,6 @@
-import 'package:flutter_starter/main.dart';
 import 'package:flutter_starter/prelude/http.dart';
-import 'package:flutter_starter/prelude/http.dart' as http;
 import 'package:flutter_starter/prelude/result.dart';
+import 'package:http/http.dart';
 
 typedef Location = ({String name, String region, double latitude, double longitude});
 
@@ -19,10 +18,9 @@ _LocationResults _locationResultsFromJson(Map<String, dynamic> json) =>
 
 const apiUrl = 'https://geocoding-api.open-meteo.com';
 
-HttpFuture<List<Location>> searchLocation(String name) async {
+HttpFuture<List<Location>> searchLocation(Client client, String name) async {
   var nameParam = Uri.encodeComponent(name);
   var url = Uri.parse('$apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
-  var client = AppDependencies().getHttpClient();
   var httpResult = await client.sendRequest(HttpMethod.get, url);
 
   return httpResult.expectStatusCode(200).tryParseJson(_locationResultsFromJson).mapOk((it) => it.results);

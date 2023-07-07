@@ -1,5 +1,3 @@
-
-
 sealed class Result<T, E> {}
 
 class Ok<T, E> implements Result<T, E> {
