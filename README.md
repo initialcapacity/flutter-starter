@@ -1,16 +1,57 @@
-# flutter_starter
+# Flutter Starter
 
-A flutter starter project
+## Intro
 
-## Getting Started
+This is a starter project for Flutter based mobile applications.
+Some of the code is useful for desktop apps too.
+This is an example of a simple mobile app with API integration and how to set it up with some
+dependency injection and predictable testing of API integrations.
 
-This project is a starting point for a Flutter application.
+* See [`AppDependencies`](lib/app_dependencies.dart) for some simple dependency injection and
+  ability to override during tests.
+* See [`TestAppDepdendencies`](test/test_app_dependencies.dart) for injection of test dependencies.
+* See [`result.dart`](lib/prelude/result.dart) for functional handling of errors.
+* See [`json.dart`](lib/prelude/json.dart) for simple json parsing (careful it can throw exception).
+* See [`http.dart`](lib/prelude/http.dart) for exception free API integrations including safe json
+  parsing.
+* See [`open_meteo_api.dart`](lib/open_meteo/open_meteo_api.dart) for a usage example of all the
+  above.
+* See [`location_search_page_test.dart`](test/location_search_page_test.dart) for an example test
+  with API integration.
 
-A few resources to get you started if this is your first Flutter project:
+## Dev Environment setup
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* Install [Dart](https://dart.dev/)
+* Install [Flutter](https://flutter.dev/)
+* Install [Android Studio](https://developer.android.com/studio) with Flutter and Dart plugins
+* Install [XCode](https://developer.apple.com/xcode/) for iOS dev
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Running the app
+
+### On Android Emulator
+
+* In Android Studio, setup an emulator in the `Device Manager`.
+* Run it using the play button in `Device Manager`
+* It switches to the `Running Devices` view.
+* Select the emulator from the device list next to the run configuration.
+* Run `main.dart`
+
+### On iOS Simulator (MacOS+XCode required)
+
+* Start the `iOS Simulator` app
+* Install and Run the iPhone Simulator of your choice.
+* In Android Studio, select the simulator from the device list next to the run configuration.
+* Run `main.dart`
+
+### On Android or iOS Device
+
+* Configure device for developer mode (see Android/iOS documentation for that)
+* Connect to your computer
+* Select in Android Studio's device list
+* Run `main.dart`
+
+## Running tests
+
+```
+flutter test
+```
