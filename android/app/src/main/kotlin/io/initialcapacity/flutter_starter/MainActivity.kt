@@ -1,4 +1,4 @@
-package io.damo.flutter_starter
+package io.initialcapacity.flutter_starter
 
 import io.flutter.embedding.android.FlutterActivity
 
