@@ -8,11 +8,12 @@ final class Location {
   final double latitude;
   final double longitude;
 
-  const Location(
-      {required this.name,
-      required this.region,
-      required this.latitude,
-      required this.longitude});
+  const Location({
+    required this.name,
+    required this.region,
+    required this.latitude,
+    required this.longitude,
+  });
 
   static Location fromJson(JsonObject json) => Location(
         name: json.field('name'),
@@ -29,5 +30,7 @@ HttpFuture<Iterable<Location>> searchLocation(Client client, String name) async 
   final url = Uri.parse('$_apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
   final httpResult = await client.sendRequest(HttpMethod.get, url);
 
-  return httpResult.expectStatusCode(200).tryParseJson((json) => json.array('results', Location.fromJson));
+  return httpResult
+      .expectStatusCode(200)
+      .tryParseJson((json) => json.array('results', Location.fromJson));
 }

@@ -14,8 +14,7 @@ final class LocationSearchPage extends StatefulWidget {
 
 final class _LocationSearchPageState extends State<LocationSearchPage> {
   HttpFuture<Iterable<Location>>? _searchFuture;
-  final TextEditingController _searchTextEditController =
-      TextEditingController();
+  final TextEditingController _searchTextEditController = TextEditingController();
 
   @override
   void dispose() {
@@ -75,7 +74,8 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
   Widget _searchResultsWidget(BuildContext context, Iterable<Location> locations) {
     return Expanded(
       child: ListView(
-        children: locations.map((location) => _singleSearchResultWidget(context, location)).toList(),
+        children:
+            locations.map((location) => _singleSearchResultWidget(context, location)).toList(),
       ),
     );
   }
@@ -104,8 +104,7 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
 
     return FutureBuilder(
       future: _searchFuture!,
-      builder: (context, snapshot) =>
-      switch (snapshot.data) {
+      builder: (context, snapshot) => switch (snapshot.data) {
         Ok(value: final locations) => _searchResultsWidget(context, locations),
         Err(error: final err) => _searchErrorWidget(err),
         null => _loadingWidget(),

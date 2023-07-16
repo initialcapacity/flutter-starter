@@ -8,8 +8,7 @@ final class JsonObject {
   factory JsonObject.fromString(String json) =>
       JsonObject(jsonDecode(json) as Map<String, dynamic>);
 
-  factory JsonObject.fromValue(dynamic object) =>
-      JsonObject(object as Map<String, dynamic>);
+  factory JsonObject.fromValue(dynamic object) => JsonObject(object as Map<String, dynamic>);
 
   T field<T>(String name) => _values[name] as T;
 

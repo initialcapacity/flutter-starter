@@ -53,5 +53,32 @@ dependency injection and predictable testing of API integrations.
 ## Running tests
 
 ```
-flutter test
+make test
+```
+
+## Formatting
+
+We use a line length of `100` characters, which is good enough to show two files side by side on a modern 27 inch
+screen.
+Line length can be set in Android Studio `Preferences > Editor > Code Style > Dart`.
+
+```
+make format
+```
+
+If your prefer a different line length, feel free to update the `Makefile` to your team's liking
+and have developers configure Android Studio as well.
+
+## Check before push
+
+To check formatting and run tests before pushing your code
+
+```
+make check
+```
+
+or
+
+```
+make
 ```
