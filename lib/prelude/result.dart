@@ -1,12 +1,12 @@
 sealed class Result<T, E> {}
 
-class Ok<T, E> implements Result<T, E> {
+final class Ok<T, E> implements Result<T, E> {
   const Ok(this.value);
 
   final T value;
 }
 
-class Err<T, E> implements Result<T, E> {
+final class Err<T, E> implements Result<T, E> {
   const Err(this.error);
 
   final E error;

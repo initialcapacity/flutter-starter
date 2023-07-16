@@ -20,20 +20,20 @@ enum HttpMethod {
 
 sealed class HttpError {}
 
-class HttpConnectionError implements HttpError {
+final class HttpConnectionError implements HttpError {
   const HttpConnectionError(this.exception);
 
   final Exception exception;
 }
 
-class HttpUnexpectedStatusCodeError implements HttpError {
+final class HttpUnexpectedStatusCodeError implements HttpError {
   const HttpUnexpectedStatusCodeError(this.expected, this.actual);
 
   final int expected;
   final int actual;
 }
 
-class HttpDeserializationError implements HttpError {
+final class HttpDeserializationError implements HttpError {
   const HttpDeserializationError(this.error, this.responseBody);
 
   final TypeError error;

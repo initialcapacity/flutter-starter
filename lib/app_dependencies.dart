@@ -1,10 +1,12 @@
 import 'package:http/http.dart';
 
 class AppDependencies {
-  static final AppDependencies _shared = AppDependencies();
+  const AppDependencies._create();
+
+  static const AppDependencies _shared = AppDependencies._create();
   static AppDependencies? testOverrides;
 
-  factory AppDependencies() {
+  factory AppDependencies.shared() {
     return testOverrides ?? _shared;
   }
 

@@ -5,23 +5,17 @@ import 'open_meteo/open_meteo_api.dart';
 import 'prelude/http.dart';
 import 'prelude/result.dart';
 
-class LocationSearchPage extends StatefulWidget {
+final class LocationSearchPage extends StatefulWidget {
   const LocationSearchPage({super.key});
 
   @override
   State<LocationSearchPage> createState() => _LocationSearchPageState();
 }
 
-class _LocationSearchPageState extends State<LocationSearchPage> {
-  late HttpFuture<Iterable<Location>>? _searchFuture;
-  late TextEditingController _searchTextEditController;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchFuture = null;
-    _searchTextEditController = TextEditingController();
-  }
+final class _LocationSearchPageState extends State<LocationSearchPage> {
+  HttpFuture<Iterable<Location>>? _searchFuture;
+  final TextEditingController _searchTextEditController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -59,7 +53,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
 
   void _startSearch(String value) {
     setState(() {
-      AppDependencies().withHttpClient((client) {
+      AppDependencies.shared().withHttpClient((client) {
         _searchFuture = searchLocation(client, value);
       });
     });

@@ -2,13 +2,17 @@ import 'package:flutter_starter/prelude/http.dart';
 import 'package:flutter_starter/prelude/json.dart';
 import 'package:http/http.dart';
 
-class Location {
+final class Location {
   final String name;
   final String region;
   final double latitude;
   final double longitude;
 
-  const Location({required this.name, required this.region, required this.latitude, required this.longitude});
+  const Location(
+      {required this.name,
+      required this.region,
+      required this.latitude,
+      required this.longitude});
 
   static Location fromJson(JsonObject json) => Location(
         name: json.field('name'),
