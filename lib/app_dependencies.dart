@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:http/http.dart';
 
 class AppDependencies {
@@ -17,5 +20,9 @@ class AppDependencies {
     } finally {
       client.close();
     }
+  }
+
+  Future<R> compute<M, R>(FutureOr<R> Function(M) callback, M message, {String? debugLabel}) {
+    return foundation.compute<M, R>(callback, message, debugLabel: debugLabel);
   }
 }

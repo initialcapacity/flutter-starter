@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_starter/app_dependencies.dart';
@@ -14,6 +15,11 @@ class TestAppDependencies implements AppDependencies {
 
   @override
   T withHttpClient<T>(T Function(Client) block) => block(_httpClient);
+
+  @override
+  Future<R> compute<M, R>(FutureOr<R> Function(M) callback, M message, {String? debugLabel}) async {
+    return callback(message);
+  }
 
   void stub(TestHttpResponse response) {
     _response = response;

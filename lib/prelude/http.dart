@@ -1,3 +1,4 @@
+import 'package:flutter_starter/app_dependencies.dart';
 import 'package:http/http.dart';
 
 import 'json.dart';
@@ -11,11 +12,11 @@ enum HttpMethod {
 
   @override
   String toString() => switch (this) {
-        get => 'GET',
-        post => 'POST',
-        put => 'PUT',
-        delete => 'DELETE',
-      };
+    get => 'GET',
+    post => 'POST',
+    put => 'PUT',
+    delete => 'DELETE',
+  };
 }
 
 sealed class HttpError {}
@@ -42,10 +43,10 @@ final class HttpDeserializationError implements HttpError {
 
 extension HttpErrorMessage on HttpError {
   String message() => switch (this) {
-        HttpConnectionError() => 'There was an error connecting',
-        HttpUnexpectedStatusCodeError() => 'Unexpected response from api',
-        HttpDeserializationError() => 'Failed to parse response',
-      };
+    HttpConnectionError() => 'There was an error connecting',
+    HttpUnexpectedStatusCodeError() => 'Unexpected response from api',
+    HttpDeserializationError() => 'Failed to parse response',
+  };
 }
 
 typedef HttpResult<T> = Result<T, HttpError>;
@@ -74,13 +75,21 @@ extension ResponseHandling on HttpResult<Response> {
         }
       });
 
-  Result<T, HttpError> tryParseJson<T>(JsonDecode<T> decode) => flatMapOk((response) {
-        try {
-          final jsonObject = JsonObject.fromString(response.body);
-          final object = decode(jsonObject);
-          return Ok(object);
-        } on TypeError catch (e) {
-          return Err(HttpDeserializationError(e, response.body));
-        }
-      });
+  HttpFuture<T> tryParseJson<T>(JsonDecode<T> decode) async {
+    return switch (this) {
+      Ok(value: final response) => AppDependencies.shared().compute(
+          (response) {
+            try {
+              final jsonObject = JsonObject.fromString(response.body);
+              final object = decode(jsonObject);
+              return Ok(object);
+            } on TypeError catch (e) {
+              return Err(HttpDeserializationError(e, response.body));
+            }
+          },
+          response,
+        ),
+      Err(error: final error) => Future.value(Err(error)),
+    };
+  }
 }
