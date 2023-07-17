@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_starter/app_dependencies.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
+import 'package:provider/provider.dart';
 
 typedef TestHttpResponse = ({int statusCode, Map<String, dynamic> body});
 typedef RecordedRequest = ({String method, String url, String body});
 
-class TestAppDependencies implements AppDependencies {
-  TestAppDependencies() {
-    AppDependencies.testOverrides = this;
-  }
-
+class TestDependencies implements AppDependencies {
   @override
   T withHttpClient<T>(T Function(Client) block) => block(_httpClient);
 
@@ -37,4 +36,12 @@ class TestAppDependencies implements AppDependencies {
     _requests.add((method: request.method, url: request.url.toString(), body: request.body));
     return Response(jsonEncode(_response.body), _response.statusCode);
   });
+}
+
+extension WidgetTesterWithTestDependencies on WidgetTester {
+  Future<TestDependencies> pumpWithTestDependencies(Widget widget) async {
+    final testDependencies = TestDependencies();
+    await pumpWidget(Provider<AppDependencies>(create: (_) => testDependencies, child: widget));
+    return testDependencies;
+  }
 }

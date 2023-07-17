@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_starter/app_dependencies.dart';
+import 'package:provider/provider.dart';
 
 import 'location_search_page.dart';
 
 void main() {
-  runApp(const App());
+  runApp(Provider<AppDependencies>(
+    create: (_) => DefaultAppDependencies(),
+    child: const App(),
+  ));
 }
 
 final class App extends StatelessWidget {

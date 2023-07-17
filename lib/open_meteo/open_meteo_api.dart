@@ -1,6 +1,6 @@
+import 'package:flutter_starter/app_dependencies.dart';
 import 'package:flutter_starter/prelude/http.dart';
 import 'package:flutter_starter/prelude/json.dart';
-import 'package:http/http.dart';
 
 final class Location {
   final String name;
@@ -25,12 +25,15 @@ final class Location {
 
 const _apiUrl = 'https://geocoding-api.open-meteo.com';
 
-HttpFuture<Iterable<Location>> searchLocation(Client client, String name) async {
+HttpFuture<Iterable<Location>> searchLocation(AppDependencies dependencies, String name) async {
   final nameParam = Uri.encodeComponent(name);
   final url = Uri.parse('$_apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
-  final httpResult = await client.sendRequest(HttpMethod.get, url);
 
-  return httpResult
-      .expectStatusCode(200)
-      .tryParseJson((json) => json.array('results', Location.fromJson));
+  return dependencies.withHttpClient((client) async {
+    final httpResult = await client.sendRequest(HttpMethod.get, url);
+
+    return httpResult
+        .expectStatusCode(200)
+        .tryParseJson(dependencies, (json) => json.array('results', Location.fromJson));
+  });
 }

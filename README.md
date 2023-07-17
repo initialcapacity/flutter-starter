@@ -7,9 +7,9 @@ Some of the code is useful for desktop apps too.
 This is an example of a simple mobile app with API integration and how to set it up with some
 dependency injection and predictable testing of API integrations.
 
-* See [`AppDependencies`](lib/app_dependencies.dart) for some simple dependency injection and
-  ability to override during tests.
-* See [`TestAppDepdendencies`](test/test_app_dependencies.dart) for injection of test dependencies.
+* See [`AppDependencies`](lib/app_dependencies.dart) for some simple dependency injection using
+  a [Provider](https://pub.dev/packages/provider).
+* See [`TestDepdendencies`](test/test_dependencies.dart) for injection of test dependencies.
 * See [`result.dart`](lib/prelude/result.dart) for functional handling of errors.
 * See [`json.dart`](lib/prelude/json.dart) for simple json parsing (careful it can throw exception).
 * See [`http.dart`](lib/prelude/http.dart) for exception free API integrations including safe json

@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'test_app_dependencies.dart';
+import 'test_dependencies.dart';
 
 void main() {
-  late TestAppDependencies testDependencies;
-
   final validResultsJson = {
     'results': [
       {'name': 'Louisville', 'admin1': 'Kentucky', 'latitude': 38.25424, 'longitude': -85.75941},
@@ -21,12 +19,8 @@ void main() {
     ]
   };
 
-  setUp(() {
-    testDependencies = TestAppDependencies();
-  });
-
   testWidgets('Search for locations', (WidgetTester tester) async {
-    await tester.pumpWidget(const App());
+    final testDependencies = await tester.pumpWithTestDependencies(const App());
 
     expect(find.byType(TextField), findsOneWidget);
 
@@ -51,7 +45,7 @@ void main() {
   });
 
   testWidgets('Search for locations, name URI encoding', (WidgetTester tester) async {
-    await tester.pumpWidget(const App());
+    final testDependencies = await tester.pumpWithTestDependencies(const App());
 
     testDependencies.stub((statusCode: 200, body: validResultsJson));
 
@@ -67,7 +61,7 @@ void main() {
   });
 
   testWidgets('Search for locations, on http error', (WidgetTester tester) async {
-    await tester.pumpWidget(const App());
+    final testDependencies = await tester.pumpWithTestDependencies(const App());
 
     testDependencies.stub((statusCode: 400, body: validResultsJson));
 
@@ -79,7 +73,7 @@ void main() {
   });
 
   testWidgets('Search for locations, on invalid json', (WidgetTester tester) async {
-    await tester.pumpWidget(const App());
+    final testDependencies = await tester.pumpWithTestDependencies(const App());
 
     testDependencies.stub((statusCode: 200, body: invalidResultsJson));
 

@@ -12,11 +12,11 @@ enum HttpMethod {
 
   @override
   String toString() => switch (this) {
-    get => 'GET',
-    post => 'POST',
-    put => 'PUT',
-    delete => 'DELETE',
-  };
+        get => 'GET',
+        post => 'POST',
+        put => 'PUT',
+        delete => 'DELETE',
+      };
 }
 
 sealed class HttpError {}
@@ -43,10 +43,10 @@ final class HttpDeserializationError implements HttpError {
 
 extension HttpErrorMessage on HttpError {
   String message() => switch (this) {
-    HttpConnectionError() => 'There was an error connecting',
-    HttpUnexpectedStatusCodeError() => 'Unexpected response from api',
-    HttpDeserializationError() => 'Failed to parse response',
-  };
+        HttpConnectionError() => 'There was an error connecting',
+        HttpUnexpectedStatusCodeError() => 'Unexpected response from api',
+        HttpDeserializationError() => 'Failed to parse response',
+      };
 }
 
 typedef HttpResult<T> = Result<T, HttpError>;
@@ -75,9 +75,9 @@ extension ResponseHandling on HttpResult<Response> {
         }
       });
 
-  HttpFuture<T> tryParseJson<T>(JsonDecode<T> decode) async {
+  HttpFuture<T> tryParseJson<T>(AsyncCompute async, JsonDecode<T> decode) async {
     return switch (this) {
-      Ok(value: final response) => AppDependencies.shared().compute(
+      Ok(value: final response) => async.compute(
           (response) {
             try {
               final jsonObject = JsonObject.fromString(response.body);

@@ -52,9 +52,7 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
 
   void _startSearch(String value) {
     setState(() {
-      AppDependencies.shared().withHttpClient((client) {
-        _searchFuture = searchLocation(client, value);
-      });
+      _searchFuture = searchLocation(context.appDependencies(), value);
     });
   }
 
