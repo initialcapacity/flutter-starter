@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
+import 'package:flutter_starter/location_details_page.dart';
 
 import 'open_meteo/open_meteo_api.dart';
 import 'prelude/http.dart';
@@ -66,6 +67,9 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
       subtitle: Text(location.region),
       subtitleTextStyle: theme.textTheme.labelMedium,
       shape: Border(bottom: BorderSide(color: borderColor)),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => LocationDetailsPage(location)),
+      ),
     );
   }
 

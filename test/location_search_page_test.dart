@@ -4,6 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'test_dependencies.dart';
 
+extension LocationSearch on WidgetTester {
+  Future<void> submitSearch(String text) async {
+    await enterText(find.byType(TextField), text);
+    await testTextInput.receiveAction(TextInputAction.done);
+  }
+}
+
 void main() {
   final validResultsJson = {
     'results': [
@@ -26,8 +33,7 @@ void main() {
 
     testDependencies.stub((statusCode: 200, body: validResultsJson));
 
-    await tester.enterText(find.byType(TextField), 'Louisville');
-    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.submitSearch('Louisville');
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -44,13 +50,28 @@ void main() {
     expect(lastRequest, equals((method: 'GET', url: expectedUrl, body: '')));
   });
 
+  testWidgets('Search for locations, navigation to details', (WidgetTester tester) async {
+    final testDependencies = await tester.pumpWithTestDependencies(const App());
+
+    testDependencies.stub((statusCode: 200, body: validResultsJson));
+
+    await tester.submitSearch('Louisville');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Colorado'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Location Details'), findsOneWidget);
+    expect(find.text('Louisville'), findsOneWidget);
+    expect(find.text('Colorado'), findsOneWidget);
+  });
+
   testWidgets('Search for locations, name URI encoding', (WidgetTester tester) async {
     final testDependencies = await tester.pumpWithTestDependencies(const App());
 
     testDependencies.stub((statusCode: 200, body: validResultsJson));
 
-    await tester.enterText(find.byType(TextField), 'Louisville Colorado');
-    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.submitSearch('Louisville Colorado');
     await tester.pumpAndSettle();
 
     final lastRequest = testDependencies.lastRequest();
@@ -65,8 +86,7 @@ void main() {
 
     testDependencies.stub((statusCode: 400, body: validResultsJson));
 
-    await tester.enterText(find.byType(TextField), 'Louisville');
-    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.submitSearch('Louisville');
     await tester.pumpAndSettle();
 
     expect(find.text('Unexpected response from api'), findsOneWidget);
@@ -77,8 +97,7 @@ void main() {
 
     testDependencies.stub((statusCode: 200, body: invalidResultsJson));
 
-    await tester.enterText(find.byType(TextField), 'Louisville');
-    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.submitSearch('Louisville');
     await tester.pumpAndSettle();
 
     expect(find.text('Failed to parse response'), findsOneWidget);

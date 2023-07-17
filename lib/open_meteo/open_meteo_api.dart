@@ -23,11 +23,11 @@ final class Location {
       );
 }
 
-const _apiUrl = 'https://geocoding-api.open-meteo.com';
+const _searchApiUrl = 'https://geocoding-api.open-meteo.com/v1/search';
 
 HttpFuture<Iterable<Location>> searchLocation(AppDependencies dependencies, String name) async {
   final nameParam = Uri.encodeComponent(name);
-  final url = Uri.parse('$_apiUrl/v1/search?name=$nameParam&count=10&language=en&format=json');
+  final url = Uri.parse('$_searchApiUrl?name=$nameParam&count=10&language=en&format=json');
 
   return dependencies.withHttpClient((client) async {
     final httpResult = await client.sendRequest(HttpMethod.get, url);
