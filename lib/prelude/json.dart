@@ -15,13 +15,26 @@ final class JsonObject {
   /// This throws if the object is not a Map<String, dynamic>
   factory JsonObject.fromValue(dynamic object) => JsonObject(object as Map<String, dynamic>);
 
-  /// This throws if the value for the field is not of type T
-  T field<T>(String name) => _values[name] as T;
+  /// This throws if the value for the field is not of type T or the decode call fails
+  T field<T>(String name, {JsonDecode<T>? decode}) {
+    final value = _values[name];
+
+    if (decode == null) {
+      return value as T;
+    }
+
+    return decode(JsonObject.fromValue(value));
+  }
 
   /// This throws if the field is not an array of objects that match the decoder
-  Iterable<T> array<T>(String name, JsonDecode<T> decode) {
+  Iterable<T> objectArray<T>(String name, JsonDecode<T> decode) {
     return (_values[name] as List<dynamic>).map((e) => decode(JsonObject.fromValue(e))).toList();
+  }
+
+  /// This throws if the field is not an array of objects that match the type of T
+  Iterable<T> valueArray<T>(String name) {
+    return (_values[name] as List<dynamic>).map((e) => e as T).toList();
   }
 }
 
-typedef JsonDecode<T> = T Function(JsonObject);
+typedef JsonDecode<T> = T Function(JsonObject json);

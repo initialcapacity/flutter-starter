@@ -15,7 +15,7 @@ final class Location {
     required this.longitude,
   });
 
-  static Location fromJson(JsonObject json) => Location(
+  factory Location.fromJson(JsonObject json) => Location(
         name: json.field('name'),
         region: json.field('admin1'),
         latitude: json.field('latitude'),
@@ -34,6 +34,6 @@ HttpFuture<Iterable<Location>> searchLocation(AppDependencies dependencies, Stri
 
     return httpResult
         .expectStatusCode(200)
-        .tryParseJson(dependencies, (json) => json.array('results', Location.fromJson));
+        .tryParseJson(dependencies, (json) => json.objectArray('results', Location.fromJson));
   });
 }

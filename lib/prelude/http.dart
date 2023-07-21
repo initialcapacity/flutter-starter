@@ -1,8 +1,13 @@
-import 'package:flutter_starter/app_dependencies.dart';
 import 'package:http/http.dart';
+import 'package:logger/logger.dart';
 
+import 'async_compute.dart';
 import 'json.dart';
 import 'result.dart';
+
+abstract class HttpClientProvider {
+  T withHttpClient<T>(T Function(Client client) block);
+}
 
 enum HttpMethod {
   get,
@@ -84,6 +89,7 @@ extension ResponseHandling on HttpResult<Response> {
               final object = decode(jsonObject);
               return Ok(object);
             } on TypeError catch (e) {
+              _logger.e('Failed to parse json: ${response.body}', e);
               return Err(HttpDeserializationError(e, response.body));
             }
           },
@@ -93,3 +99,5 @@ extension ResponseHandling on HttpResult<Response> {
     };
   }
 }
+
+final _logger = Logger();

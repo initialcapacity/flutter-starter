@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/app_dependencies.dart';
+import 'package:flutter_starter/location_search/location_search_page.dart';
 import 'package:provider/provider.dart';
 
-import 'location_search_page.dart';
+import 'app_dependencies.dart';
 
 void main() {
   runApp(Provider<AppDependencies>(

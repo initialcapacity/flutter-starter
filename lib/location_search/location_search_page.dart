@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
-import 'package:flutter_starter/location_details_page.dart';
+import 'package:flutter_starter/forecast/forecast_api.dart';
+import 'package:flutter_starter/forecast/location_forecast_page.dart';
+import 'package:flutter_starter/prelude/http.dart';
+import 'package:flutter_starter/widgets/http_future_builder.dart';
 
-import 'open_meteo/open_meteo_api.dart';
-import 'prelude/http.dart';
-import 'prelude/result.dart';
+import 'location_search_api.dart';
 
 final class LocationSearchPage extends StatefulWidget {
   const LocationSearchPage({super.key});
@@ -57,7 +58,21 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
     });
   }
 
-  Widget _singleSearchResultWidget(BuildContext context, Location location) {
+  Widget _searchResultsFutureWidget() {
+    if (_searchFuture == null) {
+      return const Text('');
+    }
+
+    return HttpFutureBuilder(future: _searchFuture!, builder: _loadedWidget);
+  }
+
+  Widget _loadedWidget(BuildContext context, Iterable<Location> locations) => Expanded(
+        child: ListView(
+          children: locations.map((location) => _searchResultRow(context, location)).toList(),
+        ),
+      );
+
+  Widget _searchResultRow(BuildContext context, Location location) {
     final theme = Theme.of(context);
     final borderColor = theme.colorScheme.outline;
 
@@ -68,49 +83,15 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
       subtitleTextStyle: theme.textTheme.labelMedium,
       shape: Border(bottom: BorderSide(color: borderColor)),
       onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => LocationDetailsPage(location)),
+        MaterialPageRoute(builder: (ctx) {
+          final appDependencies = ctx.appDependencies();
+
+          return LocationForecastPage(
+            location,
+            forecastFuture: fetchForecast(appDependencies, location),
+          );
+        }),
       ),
-    );
-  }
-
-  Widget _searchResultsWidget(BuildContext context, Iterable<Location> locations) {
-    return Expanded(
-      child: ListView(
-        children:
-            locations.map((location) => _singleSearchResultWidget(context, location)).toList(),
-      ),
-    );
-  }
-
-  Widget _searchErrorWidget(HttpError error) => Container(
-        padding: const EdgeInsets.fromLTRB(0, 64, 0, 0),
-        child: Text(error.message()),
-      );
-
-  Widget _loadingWidget() => Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 128),
-              child: const SizedBox(width: 32, height: 32, child: CircularProgressIndicator()),
-            ),
-          ],
-        ),
-      );
-
-  Widget _searchResultsFutureWidget() {
-    if (_searchFuture == null) {
-      return const Text('');
-    }
-
-    return FutureBuilder(
-      future: _searchFuture!,
-      builder: (context, snapshot) => switch (snapshot.data) {
-        Ok(value: final locations) => _searchResultsWidget(context, locations),
-        Err(error: final err) => _searchErrorWidget(err),
-        null => _loadingWidget(),
-      },
     );
   }
 }

@@ -14,7 +14,7 @@ dependency injection and predictable testing of API integrations.
 * See [`json.dart`](lib/prelude/json.dart) for simple json parsing (careful it can throw exception).
 * See [`http.dart`](lib/prelude/http.dart) for exception free API integrations including safe json
   parsing.
-* See [`open_meteo_api.dart`](lib/open_meteo/open_meteo_api.dart) for a usage example of all the
+* See [`location_search_api.dart`](lib/location_search/location_search_api.dart) for a usage example of all the
   above.
 * See [`location_search_page_test.dart`](test/location_search_page_test.dart) for an example test
   with API integration.
