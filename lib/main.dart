@@ -24,7 +24,7 @@ final class App extends StatelessWidget {
           brightness: MediaQuery.of(context).platformBrightness,
         ),
         textTheme: const TextTheme(
-          titleLarge: TextStyle(fontWeight: FontWeight.w500, letterSpacing: 0.5),
+          titleLarge: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
         ),
         useMaterial3: true,
       ),

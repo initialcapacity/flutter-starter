@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
 import 'package:flutter_starter/forecast/forecast_api.dart';
-import 'package:flutter_starter/forecast/location_forecast_page.dart';
+import 'package:flutter_starter/forecast/forecast_page.dart';
 import 'package:flutter_starter/prelude/http.dart';
 import 'package:flutter_starter/widgets/http_future_builder.dart';
 
@@ -15,7 +15,7 @@ final class LocationSearchPage extends StatefulWidget {
 }
 
 final class _LocationSearchPageState extends State<LocationSearchPage> {
-  HttpFuture<Iterable<Location>>? _searchFuture;
+  HttpFuture<Iterable<LocationJson>>? _searchFuture;
   final TextEditingController _searchTextEditController = TextEditingController();
 
   @override
@@ -32,7 +32,7 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorScheme.inversePrimary,
-        title: const Text('Weather Locations'),
+        title: const Text('Location Search'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -44,6 +44,11 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
               controller: _searchTextEditController,
               onSubmitted: (String value) => _startSearch(value),
               textInputAction: TextInputAction.search,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                border: InputBorder.none,
+                hintText: 'e.g. Boulder, Colorado',
+              ),
             ),
           ),
           _searchResultsFutureWidget(),
@@ -66,27 +71,28 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
     return HttpFutureBuilder(future: _searchFuture!, builder: _loadedWidget);
   }
 
-  Widget _loadedWidget(BuildContext context, Iterable<Location> locations) => Expanded(
+  Widget _loadedWidget(BuildContext context, Iterable<LocationJson> locations) => Expanded(
         child: ListView(
           children: locations.map((location) => _searchResultRow(context, location)).toList(),
         ),
       );
 
-  Widget _searchResultRow(BuildContext context, Location location) {
+  Widget _searchResultRow(BuildContext context, LocationJson location) {
     final theme = Theme.of(context);
-    final borderColor = theme.colorScheme.outline;
+    final borderColor = theme.colorScheme.outline.withOpacity(0.25);
 
     return ListTile(
       title: Text(location.name),
       titleTextStyle: theme.textTheme.titleMedium,
       subtitle: Text(location.region),
       subtitleTextStyle: theme.textTheme.labelMedium,
+      trailing: const Icon(Icons.chevron_right),
       shape: Border(bottom: BorderSide(color: borderColor)),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (ctx) {
           final appDependencies = ctx.appDependencies();
 
-          return LocationForecastPage(
+          return ForecastPage(
             location,
             forecastFuture: fetchForecast(appDependencies, location),
           );
