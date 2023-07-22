@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 
@@ -102,5 +100,4 @@ extension ResponseHandling on HttpResult<Response> {
   }
 }
 
-final _defaultLevel = Platform.environment.containsKey('FLUTTER_TEST') ? Level.nothing : Level.info;
-final _logger = Logger(level: _defaultLevel);
+final _logger = Logger();

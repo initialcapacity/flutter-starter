@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter/location_search/location_search_api.dart';
 import 'package:flutter_starter/main.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart';
 
 import '../test_dependencies.dart';
 import 'location_search_api_builders.dart';
@@ -62,6 +63,8 @@ void main() {
   });
 
   testWidgets('Search for locations, on invalid json', (WidgetTester tester) async {
+    Logger.level = Level.nothing;
+
     final invalidResultsJson = {
       'results': [
         {'name': 1, 'region': 'Kentucky'},
