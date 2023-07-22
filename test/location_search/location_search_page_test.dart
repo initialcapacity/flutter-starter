@@ -3,9 +3,9 @@ import 'package:flutter_starter/location_search/location_search_api.dart';
 import 'package:flutter_starter/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'api_testing_support.dart';
+import '../test_dependencies.dart';
+import 'location_search_api_builders.dart';
 import 'location_search_page_object.dart';
-import 'test_dependencies.dart';
 
 void main() {
   testWidgets('Search for locations', (WidgetTester tester) async {
