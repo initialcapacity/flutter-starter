@@ -13,9 +13,9 @@ class CardHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
       child: Text(
-        text,
+        text.toUpperCase(),
         textAlign: TextAlign.start,
-        style: textTheme.titleMedium,
+        style: textTheme.titleSmall,
       ),
     );
   }

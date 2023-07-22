@@ -87,7 +87,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Louisville'), findsOneWidget);
-    expect(find.text('5 day forecast'), findsOneWidget);
+    expect(find.text('5-DAY FORECAST'), findsOneWidget);
   });
 
   testWidgets('Search for locations, name URI encoding', (WidgetTester tester) async {

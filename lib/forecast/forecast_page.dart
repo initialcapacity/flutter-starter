@@ -33,7 +33,6 @@ class ForecastPage extends StatelessWidget {
     };
 
     return Scaffold(
-      backgroundColor: colorScheme.secondaryContainer,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -75,24 +74,28 @@ class ForecastPage extends StatelessWidget {
     );
   }
 
-  Widget _hourlyListWidget(BuildContext context, Forecast forecast) => Container(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CardHeader(forecast.today),
-            Card(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children:
-                      forecast.hourly.map((hourly) => _hourlyWidget(context, hourly)).toList(),
-                ),
+  Widget _hourlyListWidget(BuildContext context, Forecast forecast) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CardHeader(forecast.today),
+          Card(
+            color: colorScheme.secondaryContainer,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: forecast.hourly.map((hourly) => _hourlyWidget(context, hourly)).toList(),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _hourlyWidget(BuildContext context, HourlyForecast hourly) {
     final theme = Theme.of(context);
@@ -110,30 +113,47 @@ class ForecastPage extends StatelessWidget {
     );
   }
 
-  Widget _dailyListWidget(BuildContext context, Forecast forecast) => Container(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const CardHeader('5 day forecast'),
-            Card(
+  Widget _dailyListWidget(BuildContext context, Forecast forecast) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const CardHeader('5-day forecast'),
+          Card(
+            color: colorScheme.secondaryContainer,
+            child: Container(
+              padding: const EdgeInsets.all(16),
               child: Column(children: forecast.daily.map((d) => _dailyWidget(context, d)).toList()),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _dailyWidget(BuildContext context, DailyForecast daily) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(daily.day, style: textTheme.titleMedium),
-          Text('${daily.min} – ${daily.max}', style: textTheme.bodyLarge),
+          Expanded(
+            child: Text(daily.day, style: textTheme.titleMedium),
+          ),
+          SizedBox(
+            width: 40,
+            child: Text(daily.min, textAlign: TextAlign.start, style: textTheme.bodyLarge),
+          ),
+          SizedBox(
+            width: 40,
+            child: Text(daily.max, textAlign: TextAlign.end, style: textTheme.bodyLarge),
+          ),
         ],
       ),
     );
