@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter_starter/prelude/iterable.dart';
+import 'package:flutter_starter/prelude/time_source.dart';
 import 'package:intl/intl.dart';
 
 import 'forecast_api.dart';
@@ -16,9 +17,9 @@ final class Forecast {
   static final timeFormat = DateFormat.H();
   static final weekdayFormat = DateFormat.EEEE();
 
-  factory Forecast.present(ForecastJson json) {
+  factory Forecast.present(TimeSource timeSource, ForecastJson json) {
     final today = todayFormat.format(json.hourly.time.first);
-    final now = DateTime.now();
+    final now = timeSource.now();
     final hourlyStart = now.subtract(const Duration(hours: 1));
     final hourlyEnd = now.add(const Duration(hours: 23));
 

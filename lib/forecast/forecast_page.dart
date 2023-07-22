@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_starter/app_dependencies.dart';
 import 'package:flutter_starter/location_search/location_search_api.dart';
 import 'package:flutter_starter/prelude/http.dart';
 import 'package:flutter_starter/widgets/card_header.dart';
@@ -58,7 +59,8 @@ class ForecastPage extends StatelessWidget {
   }
 
   Widget _loadedWidget(BuildContext context, ForecastJson forecastJson) {
-    final forecast = Forecast.present(forecastJson);
+    final appDependencies = context.appDependencies();
+    final forecast = Forecast.present(appDependencies, forecastJson);
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(

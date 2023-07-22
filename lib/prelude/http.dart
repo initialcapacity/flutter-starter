@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 
@@ -17,11 +19,11 @@ enum HttpMethod {
 
   @override
   String toString() => switch (this) {
-        get => 'GET',
-        post => 'POST',
-        put => 'PUT',
-        delete => 'DELETE',
-      };
+    get => 'GET',
+    post => 'POST',
+    put => 'PUT',
+    delete => 'DELETE',
+  };
 }
 
 sealed class HttpError {}
@@ -48,10 +50,10 @@ final class HttpDeserializationError implements HttpError {
 
 extension HttpErrorMessage on HttpError {
   String message() => switch (this) {
-        HttpConnectionError() => 'There was an error connecting',
-        HttpUnexpectedStatusCodeError() => 'Unexpected response from api',
-        HttpDeserializationError() => 'Failed to parse response',
-      };
+    HttpConnectionError() => 'There was an error connecting',
+    HttpUnexpectedStatusCodeError() => 'Unexpected response from api',
+    HttpDeserializationError() => 'Failed to parse response',
+  };
 }
 
 typedef HttpResult<T> = Result<T, HttpError>;
@@ -73,23 +75,23 @@ extension SendRequest on Client {
 
 extension ResponseHandling on HttpResult<Response> {
   HttpResult<Response> expectStatusCode(int expected) => flatMapOk((response) {
-        if (response.statusCode == expected) {
-          return Ok(response);
-        } else {
-          return Err(HttpUnexpectedStatusCodeError(expected, response.statusCode));
-        }
-      });
+    if (response.statusCode == expected) {
+      return Ok(response);
+    } else {
+      return Err(HttpUnexpectedStatusCodeError(expected, response.statusCode));
+    }
+  });
 
   HttpFuture<T> tryParseJson<T>(AsyncCompute async, JsonDecode<T> decode) async {
     return switch (this) {
       Ok(value: final response) => async.compute(
-          (response) {
-            try {
-              final jsonObject = JsonObject.fromString(response.body);
-              final object = decode(jsonObject);
-              return Ok(object);
-            } on TypeError catch (e) {
-              _logger.e('Failed to parse json: ${response.body}', e);
+            (response) {
+          try {
+            final jsonObject = JsonObject.fromString(response.body);
+            final object = decode(jsonObject);
+            return Ok(object);
+          } on TypeError catch (e) {
+            _logger.e('Failed to parse json: ${response.body}', e);
               return Err(HttpDeserializationError(e, response.body));
             }
           },
@@ -100,4 +102,5 @@ extension ResponseHandling on HttpResult<Response> {
   }
 }
 
-final _logger = Logger();
+final _defaultLevel = Platform.environment.containsKey('FLUTTER_TEST') ? Level.nothing : Level.info;
+final _logger = Logger(level: _defaultLevel);

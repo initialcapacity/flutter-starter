@@ -4,10 +4,11 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_starter/prelude/async_compute.dart';
 import 'package:flutter_starter/prelude/http.dart' as http;
+import 'package:flutter_starter/prelude/time_source.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
-abstract class AppDependencies implements http.HttpClientProvider, AsyncCompute {}
+abstract class AppDependencies implements http.HttpClientProvider, AsyncCompute, TimeSource {}
 
 final class DefaultAppDependencies implements AppDependencies {
   @override
@@ -24,6 +25,9 @@ final class DefaultAppDependencies implements AppDependencies {
   Future<R> compute<M, R>(FutureOr<R> Function(M) callback, M message, {String? debugLabel}) {
     return foundation.compute<M, R>(callback, message, debugLabel: debugLabel);
   }
+
+  @override
+  DateTime now() => DateTime.now();
 }
 
 extension AppDependenciesGetter on BuildContext {

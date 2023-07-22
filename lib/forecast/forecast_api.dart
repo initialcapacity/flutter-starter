@@ -30,13 +30,13 @@ final class HourlyForecastJson {
       );
 }
 
-const _forecastApiUrl = 'https://api.open-meteo.com/v1/forecast';
+const forecastApiUrl = 'https://api.open-meteo.com/v1/forecast';
 
 HttpFuture<ForecastJson> fetchForecast(AppDependencies dependencies, LocationJson location) {
   final lat = location.latitude;
   final long = location.longitude;
   final query = 'latitude=$lat&longitude=$long&hourly=temperature_2m&timezone=auto';
-  final url = Uri.parse('$_forecastApiUrl?$query');
+  final url = Uri.parse('$forecastApiUrl?$query');
 
   return dependencies.withHttpClient((client) async {
     final httpResult = await client.sendRequest(HttpMethod.get, url);
