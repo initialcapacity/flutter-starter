@@ -11,7 +11,7 @@ dependency injection and predictable testing of API integrations.
   a [Provider](https://pub.dev/packages/provider).
 * See [`TestDepdendencies`](test/test_dependencies.dart) for injection of test dependencies.
 * See [`result.dart`](lib/prelude/result.dart) for functional handling of errors.
-* See [`json.dart`](lib/prelude/json.dart) for simple json parsing (careful it can throw exception).
+* See [`json_decoder.dart`](lib/prelude/json_decoder.dart) for simple json decoding (careful it can throw exception).
 * See [`http.dart`](lib/prelude/http.dart) for exception free API integrations including safe json
   parsing.
 * See [`location_search_api.dart`](lib/location_search/location_search_api.dart) for a usage example of all the

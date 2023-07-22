@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:logger/logger.dart';
 
 import 'async_compute.dart';
-import 'json.dart';
+import 'json_decoder.dart';
 import 'result.dart';
 
 abstract class HttpClientProvider {
@@ -87,7 +87,7 @@ extension ResponseHandling on HttpResult<Response> {
       Ok(value: final response) => async.compute(
           (response) {
             try {
-              final jsonObject = JsonObject.fromString(response.body);
+              final jsonObject = JsonDecoder.fromString(response.body);
               final object = decode(jsonObject);
               return Ok(object);
             } on TypeError catch (e) {

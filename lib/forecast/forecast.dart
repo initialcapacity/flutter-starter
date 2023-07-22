@@ -17,7 +17,7 @@ final class Forecast {
   static final timeFormat = DateFormat.H();
   static final weekdayFormat = DateFormat.EEEE();
 
-  factory Forecast.present(TimeSource timeSource, ForecastJson json) {
+  factory Forecast.present(TimeSource timeSource, ApiForecast json) {
     final today = todayFormat.format(json.hourly.time.first);
     final now = timeSource.now();
     final hourlyStart = now.subtract(const Duration(hours: 1));

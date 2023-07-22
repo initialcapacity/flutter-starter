@@ -3,17 +3,17 @@ import 'dart:convert';
 /// Be careful with this class.
 /// It will throw `TypeError` if casting fails.
 /// See `http.dart` for safe handling.
-final class JsonObject {
+final class JsonDecoder {
   final Map<String, dynamic> _values;
 
-  JsonObject(this._values);
+  JsonDecoder(this._values);
 
   /// This throws if the String is not a JSON object
-  factory JsonObject.fromString(String json) =>
-      JsonObject(jsonDecode(json) as Map<String, dynamic>);
+  factory JsonDecoder.fromString(String json) =>
+      JsonDecoder(jsonDecode(json) as Map<String, dynamic>);
 
   /// This throws if the object is not a Map<String, dynamic>
-  factory JsonObject.fromValue(dynamic object) => JsonObject(object as Map<String, dynamic>);
+  factory JsonDecoder.fromValue(dynamic object) => JsonDecoder(object as Map<String, dynamic>);
 
   /// This throws if the value for the field is not of type T or the decode call fails
   T field<T>(String name, {JsonDecode<T>? decode}) {
@@ -23,12 +23,12 @@ final class JsonObject {
       return value as T;
     }
 
-    return decode(JsonObject.fromValue(value));
+    return decode(JsonDecoder.fromValue(value));
   }
 
   /// This throws if the field is not an array of objects that match the decoder
   Iterable<T> objectArray<T>(String name, JsonDecode<T> decode) {
-    return (_values[name] as List<dynamic>).map((e) => decode(JsonObject.fromValue(e))).toList();
+    return (_values[name] as List<dynamic>).map((e) => decode(JsonDecoder.fromValue(e))).toList();
   }
 
   /// This throws if the field is not an array of objects that match the type of T
@@ -37,4 +37,4 @@ final class JsonObject {
   }
 }
 
-typedef JsonDecode<T> = T Function(JsonObject json);
+typedef JsonDecode<T> = T Function(JsonDecoder json);

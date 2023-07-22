@@ -11,8 +11,8 @@ import 'forecast_api.dart';
 class ForecastPage extends StatelessWidget {
   const ForecastPage(this.location, {super.key, required this.forecastFuture});
 
-  final LocationJson location;
-  final HttpFuture<ForecastJson> forecastFuture;
+  final ApiLocation location;
+  final HttpFuture<ApiForecast> forecastFuture;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class ForecastPage extends StatelessWidget {
     );
   }
 
-  Widget _loadedWidget(BuildContext context, ForecastJson forecastJson) {
+  Widget _loadedWidget(BuildContext context, ApiForecast forecastJson) {
     final appDependencies = context.appDependencies();
     final forecast = Forecast.present(appDependencies, forecastJson);
 

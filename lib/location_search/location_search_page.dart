@@ -15,7 +15,7 @@ final class LocationSearchPage extends StatefulWidget {
 }
 
 final class _LocationSearchPageState extends State<LocationSearchPage> {
-  HttpFuture<Iterable<LocationJson>>? _searchFuture;
+  HttpFuture<Iterable<ApiLocation>>? _searchFuture;
   final TextEditingController _searchTextEditController = TextEditingController();
 
   @override
@@ -71,13 +71,13 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
     return HttpFutureBuilder(future: _searchFuture!, builder: _loadedWidget);
   }
 
-  Widget _loadedWidget(BuildContext context, Iterable<LocationJson> locations) => Expanded(
+  Widget _loadedWidget(BuildContext context, Iterable<ApiLocation> locations) => Expanded(
         child: ListView(
           children: locations.map((location) => _searchResultRow(context, location)).toList(),
         ),
       );
 
-  Widget _searchResultRow(BuildContext context, LocationJson location) {
+  Widget _searchResultRow(BuildContext context, ApiLocation location) {
     final theme = Theme.of(context);
     final borderColor = theme.colorScheme.outline.withOpacity(0.25);
 
