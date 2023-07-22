@@ -61,9 +61,8 @@ void main() {
     await tester.tap(find.text('Colorado'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Location Details'), findsOneWidget);
     expect(find.text('Louisville'), findsOneWidget);
-    expect(find.text('Colorado'), findsOneWidget);
+    expect(find.text('5 day forecast'), findsOneWidget);
   });
 
   testWidgets('Search for locations, name URI encoding', (WidgetTester tester) async {

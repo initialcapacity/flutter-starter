@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/location_search/location_search_api.dart';
 import 'package:flutter_starter/prelude/http.dart';
+import 'package:flutter_starter/widgets/card_header.dart';
 import 'package:flutter_starter/widgets/http_future_builder.dart';
-import 'package:flutter_starter/widgets/sliver_list.dart';
 
 import 'forecast.dart';
 import 'forecast_api.dart';
@@ -51,19 +51,6 @@ class ForecastPage extends StatelessWidget {
               expandedTitleScale: titleScale,
             ),
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 50,
-              alignment: Alignment.center,
-              child: Text(
-                location.region,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.titleMedium,
-                textScaleFactor: 1.2,
-              ),
-            ),
-          ),
           HttpFutureBuilder(future: forecastFuture, builder: _loadedWidget, useSlivers: true),
         ],
       ),
@@ -73,20 +60,80 @@ class ForecastPage extends StatelessWidget {
   Widget _loadedWidget(BuildContext context, ForecastJson forecastJson) {
     final forecast = Forecast.present(forecastJson);
 
-    return sliverListFromList(forecast.hourly, _hourlyRow);
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          return switch (index) {
+            0 => _hourlyListWidget(context, forecast),
+            _ => _dailyListWidget(context, forecast),
+          };
+        },
+        childCount: 2,
+      ),
+    );
   }
 
-  Widget _hourlyRow(BuildContext context, HourlyForecast hourly) {
-    final theme = Theme.of(context);
-    final borderColor = theme.colorScheme.outline;
+  Widget _hourlyListWidget(BuildContext context, Forecast forecast) => Container(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CardHeader(forecast.today),
+            Card(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children:
+                      forecast.hourly.map((hourly) => _hourlyWidget(context, hourly)).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
-    return ListTile(
-      title: Text(hourly.time),
-      titleTextStyle: theme.textTheme.titleMedium,
-      subtitle: Text(hourly.temperature.toString()),
-      subtitleTextStyle: theme.textTheme.labelMedium,
-      shape: Border(bottom: BorderSide(color: borderColor)),
-      tileColor: theme.colorScheme.background,
+  Widget _hourlyWidget(BuildContext context, HourlyForecast hourly) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Text(hourly.time, style: textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Text(hourly.temperature, style: textTheme.bodyLarge),
+        ],
+      ),
+    );
+  }
+
+  Widget _dailyListWidget(BuildContext context, Forecast forecast) => Container(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const CardHeader('5 day forecast'),
+            Card(
+              child: Column(children: forecast.daily.map((d) => _dailyWidget(context, d)).toList()),
+            ),
+          ],
+        ),
+      );
+
+  Widget _dailyWidget(BuildContext context, DailyForecast daily) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(daily.day, style: textTheme.titleMedium),
+          Text('${daily.min} – ${daily.max}', style: textTheme.bodyLarge),
+        ],
+      ),
     );
   }
 }
