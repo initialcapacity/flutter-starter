@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/location_search/location_search_page.dart';
+import 'package:flutter_starter/app_pages/app_pages.dart';
 import 'package:provider/provider.dart';
 
 import 'app_dependencies.dart';
@@ -28,7 +28,7 @@ final class App extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const LocationSearchPage(),
+      home: const AppPages(),
     );
   }
 }

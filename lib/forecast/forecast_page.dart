@@ -8,70 +8,32 @@ import 'package:flutter_starter/widgets/http_future_builder.dart';
 import 'forecast.dart';
 import 'forecast_api.dart';
 
-class ForecastPage extends StatelessWidget {
-  const ForecastPage(this.location, {super.key, required this.forecastFuture});
-
+final class LocationForecast {
   final ApiLocation location;
   final HttpFuture<ApiForecast> forecastFuture;
 
+  LocationForecast(this.location, this.forecastFuture);
+}
+
+final class ForecastPage extends StatelessWidget {
+  const ForecastPage(this.locationForecast, {super.key});
+
+  final LocationForecast locationForecast;
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-    final title = location.name;
-
-    final titleScale = switch (title.length) {
-      > 22 => 1.2,
-      > 18 => 1.3,
-      _ => 1.5,
-    };
-
-    final additionalTitleScale = switch (title.length) {
-      > 26 => 0.9,
-      _ => null,
-    };
-
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            floating: true,
-            expandedHeight: 160,
-            backgroundColor: colorScheme.primaryContainer,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                title,
-                style: textTheme.titleLarge,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textScaleFactor: additionalTitleScale,
-              ),
-              expandedTitleScale: titleScale,
-            ),
-          ),
-          HttpFutureBuilder(future: forecastFuture, builder: _loadedWidget, useSlivers: true),
-        ],
-      ),
-    );
+    final forecastFuture = locationForecast.forecastFuture;
+    return HttpFutureBuilder(future: forecastFuture, builder: _loadedWidget);
   }
 
   Widget _loadedWidget(BuildContext context, ApiForecast forecastJson) {
     final appDependencies = context.appDependencies();
     final forecast = Forecast.present(appDependencies, forecastJson);
 
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return switch (index) {
-            0 => _hourlyListWidget(context, forecast),
-            _ => _dailyListWidget(context, forecast),
-          };
-        },
-        childCount: 2,
-      ),
-    );
+    return Column(children: [
+      _hourlyListWidget(context, forecast),
+      _dailyListWidget(context, forecast),
+    ]);
   }
 
   Widget _hourlyListWidget(BuildContext context, Forecast forecast) {

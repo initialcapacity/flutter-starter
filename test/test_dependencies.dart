@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 typedef TestHttpResponse = ({String? url, int statusCode, Map<String, dynamic> body});
 typedef RecordedRequest = ({String method, String url, String body});
 
-class TestDependencies implements AppDependencies {
+final class TestDependencies implements AppDependencies {
   @override
   T withHttpClient<T>(T Function(Client) block) => block(_httpClient);
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CardHeader extends StatelessWidget {
+final class CardHeader extends StatelessWidget {
   final String text;
 
   const CardHeader(this.text, {super.key});

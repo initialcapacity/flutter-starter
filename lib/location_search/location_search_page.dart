@@ -8,7 +8,9 @@ import 'package:flutter_starter/widgets/http_future_builder.dart';
 import 'location_search_api.dart';
 
 final class LocationSearchPage extends StatefulWidget {
-  const LocationSearchPage({super.key});
+  final void Function(LocationForecast) onSelect;
+
+  const LocationSearchPage({super.key, required this.onSelect});
 
   @override
   State<LocationSearchPage> createState() => _LocationSearchPageState();
@@ -29,30 +31,33 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colorScheme.inversePrimary,
-        title: const Text('Location Search'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            color: colorScheme.secondaryContainer,
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: TextField(
-              controller: _searchTextEditController,
-              onSubmitted: (String value) => _startSearch(value),
-              textInputAction: TextInputAction.search,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                border: InputBorder.none,
-                hintText: 'e.g. Boulder, Colorado',
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Card(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              child: TextField(
+                controller: _searchTextEditController,
+                onSubmitted: (String value) => _startSearch(value),
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: colorScheme.secondaryContainer.withOpacity(0.5),
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  hintText: 'e.g. Boulder, Colorado',
+                ),
               ),
             ),
-          ),
-          _searchResultsFutureWidget(),
-        ],
+            _searchResultsFutureWidget(),
+          ],
+        ),
       ),
     );
   }
@@ -79,25 +84,25 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
 
   Widget _searchResultRow(BuildContext context, ApiLocation location) {
     final theme = Theme.of(context);
-    final borderColor = theme.colorScheme.outline.withOpacity(0.25);
+    final borderColor = theme.colorScheme.outline.withOpacity(0.15);
 
     return ListTile(
       title: Text(location.name),
       titleTextStyle: theme.textTheme.titleMedium,
       subtitle: Text(location.region),
       subtitleTextStyle: theme.textTheme.labelMedium,
-      trailing: const Icon(Icons.chevron_right),
+      trailing: const Icon(Icons.add_circle_outline),
       shape: Border(bottom: BorderSide(color: borderColor)),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) {
-          final appDependencies = ctx.appDependencies();
+      onTap: () {
+        final appDependencies = context.appDependencies();
+        final locationForecast = LocationForecast(
+          location,
+          fetchForecast(appDependencies, location),
+        );
 
-          return ForecastPage(
-            location,
-            forecastFuture: fetchForecast(appDependencies, location),
-          );
-        }),
-      ),
+        // TODO move building of locationForecast to top level
+        widget.onSelect(locationForecast);
+      },
     );
   }
 }
