@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
-import 'package:flutter_starter/forecast/forecast_api.dart';
-import 'package:flutter_starter/forecast/forecast_page.dart';
 import 'package:flutter_starter/prelude/http.dart';
 import 'package:flutter_starter/widgets/http_future_builder.dart';
 
 import 'location_search_api.dart';
 
 final class LocationSearchPage extends StatefulWidget {
-  final void Function(LocationForecast) onSelect;
+  final void Function(ApiLocation) onSelect;
 
   const LocationSearchPage({super.key, required this.onSelect});
 
@@ -93,16 +91,7 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
       subtitleTextStyle: theme.textTheme.labelMedium,
       trailing: const Icon(Icons.add_circle_outline),
       shape: Border(bottom: BorderSide(color: borderColor)),
-      onTap: () {
-        final appDependencies = context.appDependencies();
-        final locationForecast = LocationForecast(
-          location,
-          fetchForecast(appDependencies, location),
-        );
-
-        // TODO move building of locationForecast to top level
-        widget.onSelect(locationForecast);
-      },
+      onTap: () => widget.onSelect(location),
     );
   }
 }
