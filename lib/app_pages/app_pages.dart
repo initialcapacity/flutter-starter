@@ -29,13 +29,6 @@ final class _AppPagesState extends State<AppPages> {
     super.initState();
     final appDependencies = context.appDependencies();
     _forecastsRepo = ForecastsRepository(appDependencies);
-    _pageController.addListener(() {
-      final newPage = _pageController.page?.round() ?? searchPage;
-
-      setState(() {
-        _page = newPage;
-      });
-    });
   }
 
   @override
@@ -54,6 +47,7 @@ final class _AppPagesState extends State<AppPages> {
             Expanded(
               child: PageView(
                 controller: _pageController,
+                onPageChanged: _updatePage,
                 children: [
                   PageLayout(
                     title: 'Add Location',
@@ -83,6 +77,12 @@ final class _AppPagesState extends State<AppPages> {
         )
       ],
     );
+  }
+
+  void _updatePage(int newPage) {
+    setState(() {
+      _page = newPage;
+    });
   }
 
   Widget _buildFloatingActionButton() {
