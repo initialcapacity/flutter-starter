@@ -18,16 +18,25 @@ final class AppPages extends StatefulWidget {
 final class _AppPagesState extends State<AppPages> {
   static const searchPage = 0;
 
-  final List<ApiLocation> _locations = [];
-  final PageController _pageController = PageController();
+  final ApiLocation _boulder = const ApiLocation(
+    name: 'Boulder',
+    region: 'Colorado',
+    latitude: 40.01499,
+    longitude: -105.27055,
+  );
+
+  late List<ApiLocation> _locations;
+  final PageController _pageController = PageController(initialPage: 1);
   late ForecastsRepository _forecastsRepo;
 
-  int _page = searchPage;
+  int _page = 1;
 
   @override
   void initState() {
     super.initState();
     final appDependencies = context.appDependencies();
+
+    _locations = [_boulder];
     _forecastsRepo = ForecastsRepository(appDependencies);
   }
 
@@ -98,7 +107,7 @@ final class _AppPagesState extends State<AppPages> {
             curve: Curves.easeInOut,
           );
         },
-        child: const Icon(Icons.search),
+        child: const Icon(Icons.search, semanticLabel: 'Go to search'),
       ),
     );
   }

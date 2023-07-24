@@ -7,6 +7,7 @@ import '../location_search/location_search_api_builders.dart';
 import '../location_search/location_search_page_object.dart';
 import '../test_dependencies.dart';
 import 'forecast_api_builders.dart';
+import 'forecast_page_object.dart';
 
 void main() {
   testWidgets('Navigate to forecast from search', (WidgetTester tester) async {
@@ -34,8 +35,8 @@ void main() {
       body: buildForecastJson(),
     ));
 
+    await tester.goToSearch();
     await tester.submitSearch('Louisville');
-    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Colorado'));
     await tester.pumpAndSettle();

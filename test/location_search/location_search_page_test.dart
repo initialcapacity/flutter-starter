@@ -4,6 +4,7 @@ import 'package:flutter_starter/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart';
 
+import '../forecast/forecast_page_object.dart';
 import '../test_dependencies.dart';
 import 'location_search_api_builders.dart';
 import 'location_search_page_object.dart';
@@ -14,6 +15,8 @@ void main() {
     const searchApiUrl = 'https://geocoding-api.open-meteo.com/v1/search';
     const searchUrl = '$searchApiUrl?name=Louisville&count=10&language=en&format=json';
 
+    await tester.goToSearch();
+
     expect(find.byType(TextField), findsOneWidget);
 
     testDependencies.stub((
@@ -22,7 +25,7 @@ void main() {
       body: buildLocationSearchJson(),
     ));
 
-    await tester.submitSearch('Louisville');
+    await tester.submitSearch('Louisville', settle: false);
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -42,8 +45,8 @@ void main() {
 
     testDependencies.stub((url: null, statusCode: 200, body: buildLocationSearchJson()));
 
+    await tester.goToSearch();
     await tester.submitSearch('Louisville Colorado');
-    await tester.pumpAndSettle();
 
     final lastRequest = testDependencies.lastRequest();
     const uriEncodedName = 'Louisville%20Colorado';
@@ -56,8 +59,8 @@ void main() {
 
     testDependencies.stub((url: null, statusCode: 400, body: buildLocationSearchJson()));
 
+    await tester.goToSearch();
     await tester.submitSearch('Louisville');
-    await tester.pumpAndSettle();
 
     expect(find.text('Unexpected response from api'), findsOneWidget);
   });
@@ -76,8 +79,8 @@ void main() {
 
     testDependencies.stub((url: null, statusCode: 200, body: invalidResultsJson));
 
+    await tester.goToSearch();
     await tester.submitSearch('Louisville');
-    await tester.pumpAndSettle();
 
     expect(find.text('Failed to parse response'), findsOneWidget);
   });
