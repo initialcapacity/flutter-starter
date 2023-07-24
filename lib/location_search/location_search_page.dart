@@ -40,6 +40,7 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
               child: TextField(
                 controller: _searchTextEditController,
                 onSubmitted: (String value) => _startSearch(value),
+                autofocus: true,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   filled: true,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
 import 'package:flutter_starter/app_pages/page_layout.dart';
-import 'package:flutter_starter/forecast/forecast_api.dart';
 import 'package:flutter_starter/forecast/forecast_page.dart';
+import 'package:flutter_starter/forecast/forecasts_repository.dart';
 import 'package:flutter_starter/location_search/location_search_api.dart';
 import 'package:flutter_starter/location_search/location_search_page.dart';
 
@@ -16,21 +16,32 @@ final class AppPages extends StatefulWidget {
 }
 
 final class _AppPagesState extends State<AppPages> {
-  final List<ApiLocation> _locations = [];
-  final PageController _controller = PageController();
+  static const searchPage = 0;
 
-  int _page = 0;
+  final List<ApiLocation> _locations = [];
+  final PageController _pageController = PageController();
+  late ForecastsRepository _forecastsRepo;
+
+  int _page = searchPage;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      final newPage = _controller.page?.round() ?? 0;
+    final appDependencies = context.appDependencies();
+    _forecastsRepo = ForecastsRepository(appDependencies);
+    _pageController.addListener(() {
+      final newPage = _pageController.page?.round() ?? searchPage;
 
       setState(() {
         _page = newPage;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,7 +53,7 @@ final class _AppPagesState extends State<AppPages> {
           children: [
             Expanded(
               child: PageView(
-                controller: _controller,
+                controller: _pageController,
                 children: [
                   PageLayout(
                     title: 'Add Location',
@@ -62,14 +73,38 @@ final class _AppPagesState extends State<AppPages> {
               currentPage: _page,
             ),
           ],
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Container(
+            padding: const EdgeInsets.only(right: 16, bottom: 110),
+            child: _buildFloatingActionButton(),
+          ),
         )
       ],
     );
   }
 
+  Widget _buildFloatingActionButton() {
+    return AnimatedScale(
+      scale: _page == searchPage ? 0 : 1,
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.bounceInOut,
+      child: FloatingActionButton(
+        onPressed: () {
+          _pageController.animateToPage(
+            searchPage,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
+        },
+        child: const Icon(Icons.search),
+      ),
+    );
+  }
+
   LocationForecast _buildLocationForecast(BuildContext context, ApiLocation location) {
-    final appDependencies = context.appDependencies();
-    return LocationForecast(location, fetchForecast(appDependencies, location));
+    return LocationForecast(location, _forecastsRepo.fetch(location));
   }
 
   void _addToLocations(ApiLocation location) {
@@ -78,7 +113,7 @@ final class _AppPagesState extends State<AppPages> {
       _page = _locations.length;
     });
 
-    _controller.animateToPage(
+    _pageController.animateToPage(
       _locations.length,
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
