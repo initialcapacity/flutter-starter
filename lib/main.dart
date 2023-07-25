@@ -35,7 +35,6 @@ final class App extends StatelessWidget {
           actionTextColor: colorScheme.onTertiary,
           closeIconColor: colorScheme.onTertiary,
           showCloseIcon: true,
-          behavior: SnackBarBehavior.floating,
         ),
         useMaterial3: true,
       ),

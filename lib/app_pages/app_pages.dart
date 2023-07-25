@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
-import 'package:flutter_starter/app_pages/page_layout.dart';
 import 'package:flutter_starter/forecast/forecast_page.dart';
 import 'package:flutter_starter/forecast/forecasts_repository.dart';
 import 'package:flutter_starter/location_search/location_search_api.dart';
@@ -48,67 +47,87 @@ final class _AppPagesState extends State<AppPages> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const PageLayout(title: ''),
-        Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: _updatePage,
-                children: [
-                  PageLayout(
-                    title: 'Add Location',
-                    body: LocationSearchPage(onSelect: _addToLocations),
-                  ),
-                  ..._locations.map(
-                    (location) => PageLayout(
-                      title: location.name,
-                      body: ForecastPage(_buildLocationForecast(context, location)),
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.remove_circle_outline_outlined),
-                          tooltip: 'Remove',
-                          onPressed: () => _removeLocation(location),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            PagingIndicator(
-              locationCount: _locations.length,
-              currentPage: _page,
-            ),
-          ],
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: colorScheme.primary,
+        titleTextStyle: textTheme.titleLarge?.copyWith(color: colorScheme.onPrimary),
+        title: Text(
+          _pageTitle(),
+          textScaleFactor: 1.5,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            padding: const EdgeInsets.only(right: 16, bottom: 100),
-            child: _buildFloatingActionButton(),
-          ),
-        )
-      ],
+        actions: _buildActions(),
+        toolbarHeight: 80,
+      ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _updatePage,
+        children: [
+          LocationSearchPage(onSelect: _addToLocations),
+          ..._locations.map((location) => ForecastPage(_buildLocationForecast(context, location))),
+        ],
+      ),
+      bottomNavigationBar: PagingIndicator(
+        locationCount: _locations.length,
+        currentPage: _page,
+      ),
+      floatingActionButton: _buildFloatingActionButton(),
     );
+  }
+
+  String _pageTitle() {
+    if (_page == 0) {
+      return 'Add Location';
+    }
+
+    final locationIndex = _page - 1;
+
+    return _locations.elementAtOrNull(locationIndex)?.name ?? '';
+  }
+
+  List<Widget>? _buildActions() {
+    if (_page == 0) {
+      return null;
+    }
+
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return [
+      IconButton(
+        icon: Icon(Icons.remove_circle_outline_outlined, color: colorScheme.onPrimary),
+        tooltip: 'Remove',
+        onPressed: () => _removeLocation(_page),
+      ),
+    ];
   }
 
   void _updatePage(int newPage) {
     setState(() {
       _page = newPage;
+      if (newPage > 0) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
     });
   }
 
   Widget _buildFloatingActionButton() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return AnimatedScale(
       scale: _page == searchPage ? 0 : 1,
       duration: const Duration(milliseconds: 500),
       curve: Curves.bounceInOut,
       child: FloatingActionButton(
         onPressed: () => _animateToPage(searchPage),
-        child: const Icon(Icons.search, semanticLabel: 'Go to search'),
+        backgroundColor: colorScheme.tertiary,
+        child: Icon(Icons.search, semanticLabel: 'Go to search', color: colorScheme.onTertiary),
       ),
     );
   }
@@ -126,13 +145,14 @@ final class _AppPagesState extends State<AppPages> {
     _animateToPage(_locations.length);
   }
 
-  void _removeLocation(ApiLocation location) {
-    _animateToPage(searchPage);
+  void _removeLocation(int page) {
+    _animateToPage(page - 1);
 
-    final previousIndex = _locations.indexOf(location);
+    final locationIndex = page - 1;
+    final location = _locations[locationIndex];
 
     setState(() {
-      _locations.remove(location);
+      _locations.removeAt(locationIndex);
     });
 
     final snackBar = SnackBar(
@@ -141,10 +161,10 @@ final class _AppPagesState extends State<AppPages> {
         label: 'Undo',
         onPressed: () {
           setState(() {
-            _locations.insert(previousIndex, location);
+            _locations.insert(locationIndex, location);
           });
 
-          _animateToPage(previousIndex + 1);
+          _animateToPage(page);
         },
       ),
     );

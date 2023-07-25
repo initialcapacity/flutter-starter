@@ -12,8 +12,8 @@ final class PagingIndicator extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Container(
-      height: 60,
-      color: colorScheme.background,
+      padding: const EdgeInsets.all(20),
+      color: colorScheme.primary,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(locationCount + 1, (index) {
@@ -23,7 +23,7 @@ final class PagingIndicator extends StatelessWidget {
           final iconData = isSearchPage ? Icons.search : Icons.circle;
           final iconSize = isSearchPage ? 14 : 12;
           final iconColor =
-              isCurrentPage ? colorScheme.onBackground : colorScheme.onBackground.withOpacity(0.5);
+              isCurrentPage ? colorScheme.onPrimary : colorScheme.onPrimary.withOpacity(0.3);
 
           return Container(
             padding: const EdgeInsets.all(4),
