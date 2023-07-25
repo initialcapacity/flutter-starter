@@ -16,15 +16,26 @@ final class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: Colors.indigo.shade900,
+      brightness: MediaQuery.of(context).platformBrightness,
+    );
+
+    const textTheme = TextTheme(
+      titleLarge: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+    );
+
     return MaterialApp(
       title: 'Weather',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigo.shade900,
-          brightness: MediaQuery.of(context).platformBrightness,
-        ),
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+        colorScheme: colorScheme,
+        textTheme: textTheme,
+        snackBarTheme: SnackBarThemeData(
+          actionBackgroundColor: colorScheme.tertiary.withOpacity(0.8),
+          actionTextColor: colorScheme.onTertiary,
+          closeIconColor: colorScheme.onTertiary,
+          showCloseIcon: true,
+          behavior: SnackBarBehavior.floating,
         ),
         useMaterial3: true,
       ),

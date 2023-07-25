@@ -66,6 +66,13 @@ final class _AppPagesState extends State<AppPages> {
                     (location) => PageLayout(
                       title: location.name,
                       body: ForecastPage(_buildLocationForecast(context, location)),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.remove_circle_outline_outlined),
+                          tooltip: 'Remove',
+                          onPressed: () => _removeLocation(location),
+                        ),
+                      ],
                     ),
                   )
                 ],
@@ -80,7 +87,7 @@ final class _AppPagesState extends State<AppPages> {
         Align(
           alignment: Alignment.bottomRight,
           child: Container(
-            padding: const EdgeInsets.only(right: 16, bottom: 110),
+            padding: const EdgeInsets.only(right: 16, bottom: 100),
             child: _buildFloatingActionButton(),
           ),
         )
@@ -97,16 +104,10 @@ final class _AppPagesState extends State<AppPages> {
   Widget _buildFloatingActionButton() {
     return AnimatedScale(
       scale: _page == searchPage ? 0 : 1,
-      duration: const Duration(milliseconds: 150),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.bounceInOut,
       child: FloatingActionButton(
-        onPressed: () {
-          _pageController.animateToPage(
-            searchPage,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-          );
-        },
+        onPressed: () => _animateToPage(searchPage),
         child: const Icon(Icons.search, semanticLabel: 'Go to search'),
       ),
     );
@@ -122,8 +123,39 @@ final class _AppPagesState extends State<AppPages> {
       _page = _locations.length;
     });
 
+    _animateToPage(_locations.length);
+  }
+
+  void _removeLocation(ApiLocation location) {
+    _animateToPage(searchPage);
+
+    final previousIndex = _locations.indexOf(location);
+
+    setState(() {
+      _locations.remove(location);
+    });
+
+    final snackBar = SnackBar(
+      content: const Text('Location removed'),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          setState(() {
+            _locations.insert(previousIndex, location);
+          });
+
+          _animateToPage(previousIndex + 1);
+        },
+      ),
+    );
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(snackBar);
+  }
+
+  void _animateToPage(int index) {
     _pageController.animateToPage(
-      _locations.length,
+      index,
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
     );

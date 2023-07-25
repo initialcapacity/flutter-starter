@@ -6,12 +6,14 @@ final class PageLayout extends StatelessWidget {
   final String title;
   final Widget? body;
   final Widget? floatingActionButton;
+  final List<Widget>? actions;
 
   const PageLayout({
     super.key,
     required this.title,
     this.body,
     this.floatingActionButton,
+    this.actions,
   });
 
   @override
@@ -38,6 +40,7 @@ final class PageLayout extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
+        actions: actions,
         toolbarHeight: 80,
       ),
       body: body,
