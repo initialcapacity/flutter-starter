@@ -1,7 +1,8 @@
-import 'package:flutter_starter/app_dependencies.dart';
 import 'package:flutter_starter/location_search/location_search_api.dart';
-import 'package:flutter_starter/prelude/http.dart';
-import 'package:flutter_starter/prelude/json_decoder.dart';
+import 'package:flutter_starter/networking/async_compute.dart';
+import 'package:flutter_starter/networking/http.dart';
+import 'package:flutter_starter/networking/http_client_provider.dart';
+import 'package:flutter_starter/networking/json_decoder.dart';
 
 final class ApiForecast {
   final ApiHourlyForecast hourly;
@@ -32,15 +33,19 @@ final class ApiHourlyForecast {
 
 const forecastApiUrl = 'https://api.open-meteo.com/v1/forecast';
 
-HttpFuture<ApiForecast> fetchForecast(AppDependencies dependencies, ApiLocation location) {
+HttpFuture<ApiForecast> fetchForecast(
+  HttpClientProvider httpClientProvider,
+  AsyncCompute asyncCompute,
+  ApiLocation location,
+) {
   final lat = location.latitude;
   final long = location.longitude;
   final query = 'latitude=$lat&longitude=$long&hourly=temperature_2m&timezone=auto';
   final url = Uri.parse('$forecastApiUrl?$query');
 
-  return dependencies.withHttpClient((client) async {
+  return httpClientProvider.withHttpClient((client) async {
     final httpResult = await client.sendRequest(HttpMethod.get, url);
 
-    return httpResult.expectStatusCode(200).tryParseJson(dependencies, ApiForecast.fromJson);
+    return httpResult.expectStatusCode(200).tryParseJson(asyncCompute, ApiForecast.fromJson);
   });
 }

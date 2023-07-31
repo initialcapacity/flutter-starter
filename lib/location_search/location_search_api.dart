@@ -1,6 +1,7 @@
-import 'package:flutter_starter/app_dependencies.dart';
-import 'package:flutter_starter/prelude/http.dart';
-import 'package:flutter_starter/prelude/json_decoder.dart';
+import 'package:flutter_starter/networking/async_compute.dart';
+import 'package:flutter_starter/networking/http.dart';
+import 'package:flutter_starter/networking/http_client_provider.dart';
+import 'package:flutter_starter/networking/json_decoder.dart';
 
 final class ApiLocation {
   final String name;
@@ -38,15 +39,19 @@ final class ApiLocation {
 
 const searchApiUrl = 'https://geocoding-api.open-meteo.com/v1/search';
 
-HttpFuture<Iterable<ApiLocation>> searchLocation(AppDependencies dependencies, String name) async {
+HttpFuture<Iterable<ApiLocation>> searchLocation(
+  HttpClientProvider httpClientProvider,
+  AsyncCompute asyncCompute,
+  String name,
+) async {
   final nameParam = Uri.encodeComponent(name);
   final url = Uri.parse('$searchApiUrl?name=$nameParam&count=10&language=en&format=json');
 
-  return dependencies.withHttpClient((client) async {
+  return httpClientProvider.withHttpClient((client) async {
     final httpResult = await client.sendRequest(HttpMethod.get, url);
 
     return httpResult
         .expectStatusCode(200)
-        .tryParseJson(dependencies, (json) => json.objectArray('results', ApiLocation.fromJson));
+        .tryParseJson(asyncCompute, (json) => json.objectArray('results', ApiLocation.fromJson));
   });
 }

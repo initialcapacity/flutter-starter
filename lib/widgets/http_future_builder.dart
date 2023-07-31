@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/prelude/http.dart';
+import 'package:flutter_starter/networking/http.dart';
+import 'package:flutter_starter/networking/http_error.dart';
 import 'package:flutter_starter/prelude/result.dart';
 
 final class HttpFutureBuilder<T> extends StatelessWidget {

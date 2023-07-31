@@ -19,7 +19,7 @@ void main() {
 
     expect(find.byType(TextField), findsOneWidget);
 
-    testDependencies.stub((
+    testDependencies.http.stub((
       url: searchUrl,
       statusCode: 200,
       body: buildLocationSearchJson(),
@@ -36,19 +36,19 @@ void main() {
     expect(find.text('Colorado'), findsOneWidget);
     expect(find.text('Kentucky'), findsOneWidget);
 
-    final lastRequest = testDependencies.lastRequest();
+    final lastRequest = testDependencies.http.lastRequest();
     expect(lastRequest, equals((method: 'GET', url: searchUrl, body: '')));
   });
 
   testWidgets('Search for locations, name URI encoding', (WidgetTester tester) async {
     final testDependencies = await tester.pumpWithTestDependencies(const App());
 
-    testDependencies.stub((url: null, statusCode: 200, body: buildLocationSearchJson()));
+    testDependencies.http.stub((url: null, statusCode: 200, body: buildLocationSearchJson()));
 
     await tester.goToSearch();
     await tester.submitSearch('Louisville Colorado');
 
-    final lastRequest = testDependencies.lastRequest();
+    final lastRequest = testDependencies.http.lastRequest();
     const uriEncodedName = 'Louisville%20Colorado';
     const expectedUrl = '$searchApiUrl?name=$uriEncodedName&count=10&language=en&format=json';
     expect(lastRequest?.url, equals(expectedUrl));
@@ -57,7 +57,7 @@ void main() {
   testWidgets('Search for locations, on http error', (WidgetTester tester) async {
     final testDependencies = await tester.pumpWithTestDependencies(const App());
 
-    testDependencies.stub((url: null, statusCode: 400, body: buildLocationSearchJson()));
+    testDependencies.http.stub((url: null, statusCode: 400, body: buildLocationSearchJson()));
 
     await tester.goToSearch();
     await tester.submitSearch('Louisville');
@@ -77,7 +77,7 @@ void main() {
 
     final testDependencies = await tester.pumpWithTestDependencies(const App());
 
-    testDependencies.stub((url: null, statusCode: 200, body: invalidResultsJson));
+    testDependencies.http.stub((url: null, statusCode: 200, body: invalidResultsJson));
 
     await tester.goToSearch();
     await tester.submitSearch('Louisville');

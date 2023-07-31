@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
 import 'package:flutter_starter/location_search/location_search_api.dart';
-import 'package:flutter_starter/prelude/http.dart';
+import 'package:flutter_starter/networking/http.dart';
 import 'package:flutter_starter/widgets/card_header.dart';
 import 'package:flutter_starter/widgets/http_future_builder.dart';
 
@@ -28,7 +28,10 @@ final class ForecastPage extends StatelessWidget {
 
   Widget _loadedWidget(BuildContext context, ApiForecast forecastJson) {
     final appDependencies = context.appDependencies();
-    final forecast = Forecast.present(appDependencies, forecastJson);
+    final forecast = Forecast.present(
+      appDependencies.timeSource,
+      forecastJson,
+    );
 
     return Column(children: [
       _hourlyListWidget(context, forecast),

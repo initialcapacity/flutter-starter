@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_pages/app_pages.dart';
+import 'package:flutter_starter/networking/async_compute.dart';
+import 'package:flutter_starter/networking/http_client_provider.dart';
+import 'package:flutter_starter/prelude/time_source.dart';
 import 'package:provider/provider.dart';
 
 import 'app_dependencies.dart';
 
 void main() {
-  runApp(Provider<AppDependencies>(
-    create: (_) => DefaultAppDependencies(),
+  runApp(Provider(
+    create: (_) => AppDependencies(
+      httpClientProvider: ConcreteHttpClientProvider(),
+      asyncCompute: FoundationAsyncCompute(),
+      timeSource: SystemTimeSource(),
+    ),
     child: const App(),
   ));
 }

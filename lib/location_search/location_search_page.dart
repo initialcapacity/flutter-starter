@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/app_dependencies.dart';
-import 'package:flutter_starter/prelude/http.dart';
+import 'package:flutter_starter/networking/http.dart';
 import 'package:flutter_starter/widgets/http_future_builder.dart';
 
 import 'location_search_api.dart';
@@ -62,8 +62,13 @@ final class _LocationSearchPageState extends State<LocationSearchPage> {
   }
 
   void _startSearch(String value) {
+    final appDependencies = context.appDependencies();
     setState(() {
-      _searchFuture = searchLocation(context.appDependencies(), value);
+      _searchFuture = searchLocation(
+        appDependencies.httpClientProvider,
+        appDependencies.asyncCompute,
+        value,
+      );
     });
   }
 

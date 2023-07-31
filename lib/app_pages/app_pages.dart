@@ -36,7 +36,10 @@ final class _AppPagesState extends State<AppPages> {
     final appDependencies = context.appDependencies();
 
     _locations = [_boulder];
-    _forecastsRepo = ForecastsRepository(appDependencies);
+    _forecastsRepo = ForecastsRepository(
+      appDependencies.httpClientProvider,
+      appDependencies.asyncCompute,
+    );
   }
 
   @override

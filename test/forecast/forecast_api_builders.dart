@@ -1,4 +1,4 @@
-import 'package:flutter_starter/prelude/json_decoder.dart';
+import 'package:flutter_starter/networking/json_decoder.dart';
 
 JsonObject buildHourlyForecastJon({
   JsonArray<String>? time,

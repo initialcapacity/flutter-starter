@@ -25,7 +25,7 @@ void main() {
         '&hourly=temperature_2m'
         '&timezone=auto';
 
-    testDependencies.stub((
+    testDependencies.http.stub((
       url: searchUrl,
       statusCode: 200,
       body: buildLocationSearchJson(),
