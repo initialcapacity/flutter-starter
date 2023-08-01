@@ -7,11 +7,11 @@ tasks: ## Print available tasks
 
 .PHONY: format
 format: ## Format code
-	dart format lib --line-length 100 --set-exit-if-changed
+	cd weather_app; dart format lib --line-length 100 --set-exit-if-changed
 
 .PHONY: test
 test: ## Run tests
-	flutter test
+	cd weather_app; flutter test
 
 .PHONY: check
 check: format test ## Check formatting and run tests
