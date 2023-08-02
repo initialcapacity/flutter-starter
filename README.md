@@ -7,16 +7,16 @@ Some of the code is useful for desktop apps too.
 This is an example of a simple mobile app with API integration and how to set it up with some
 dependency injection and predictable testing of API integrations.
 
-* See [`AppDependencies`](lib/app_dependencies.dart) for some simple dependency injection using
+* See [`AppDependencies`](weather_app/lib/app_dependencies.dart) for some simple dependency injection using
   a [Provider](https://pub.dev/packages/provider).
-* See [`TestDepdendencies`](test/test_dependencies.dart) for injection of test dependencies.
-* See [`result.dart`](lib/prelude/result.dart) for functional handling of errors.
-* See [`json_decoder.dart`](lib/prelude/json_decoder.dart) for simple json decoding (careful it can throw exception).
-* See [`http.dart`](lib/prelude/http.dart) for exception free API integrations including safe json
+* See [`TestDepdendencies`](weather_app/test/test_dependencies.dart) for injection of test dependencies.
+* See [`result.dart`](weather_app/lib/prelude/result.dart) for functional handling of errors.
+* See [`json_decoder.dart`](weather_app/lib/networking/json_decoder.dart) for simple json decoding (careful it can throw exception).
+* See [`http.dart`](weather_app/lib/networking/http.dart) for exception free API integrations including safe json
   parsing.
-* See [`location_search_api.dart`](lib/location_search/location_search_api.dart) for a usage example of all the
+* See [`location_search_api.dart`](weather_app/lib/location_search/location_search_api.dart) for a usage example of all the
   above.
-* See [`location_search_page_test.dart`](test/location_search_page_test.dart) for an example test
+* See [`location_search_page_test.dart`](weather_app/test/location_search/location_search_page_test.dart) for an example test
   with API integration.
 
 ## Dev Environment setup
