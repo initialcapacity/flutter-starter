@@ -37,7 +37,7 @@ test: cyclic_dependency_checks/test weather_app/test ## Run all tests
 
 .PHONY: check-cycles
 check-cycles: ## Test cyclic dependencies
-	cd cyclic_dependency_checks; dart lib/main.dart ../weather_app
+	cd cyclic_dependency_checks; dart run cyclic_dependency_checks ../weather_app
 
 .PHONY: check
 check: format test check-cycles ## Check formatting and run tests
