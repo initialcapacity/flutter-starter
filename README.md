@@ -7,7 +7,7 @@ Some of the code is useful for desktop apps too.
 This is an example of a simple mobile app with API integration and how to set it up with some
 dependency injection and predictable testing of API integrations.
 
-* See [`AppDependencies`](weather_app/lib/app_dependencies.dart) for some simple dependency injection using
+* See [`AppDependencies`](weather_app/lib/app_dependencies/app_dependencies.dart) for some simple dependency injection using
   a [Provider](https://pub.dev/packages/provider).
 * See [`TestDepdendencies`](weather_app/test/test_dependencies.dart) for injection of test dependencies.
 * See [`result.dart`](weather_app/lib/prelude/result.dart) for functional handling of errors.
@@ -67,11 +67,20 @@ make format
 ```
 
 If your prefer a different line length, feel free to update the `Makefile` to your team's liking
-and have developers configure Android Studio as well.
+and have developers configure their IDE as well.
+
+## Checking for cyclic dependencies
+
+Make sure your imports are relative only for files in the same folder, otherwise use `package:` imports.
+Run the make task for checking cycles:
+
+```
+make check-cycles
+```
 
 ## Check before push
 
-To check formatting and run tests before pushing your code
+To check formatting, cyclic dependencies and run tests before pushing your code
 
 ```
 make check
