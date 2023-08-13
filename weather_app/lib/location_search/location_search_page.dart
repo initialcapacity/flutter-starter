@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/app_dependencies.dart';
+import 'package:weather_app/app_dependencies/app_dependencies.dart';
 import 'package:weather_app/networking/http.dart';
 import 'package:weather_app/widgets/http_future_builder.dart';
 

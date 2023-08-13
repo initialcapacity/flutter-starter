@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/app_dependencies.dart';
+import 'package:weather_app/app_dependencies/app_dependencies.dart';
 import 'package:weather_app/location_search/location_search_api.dart';
 import 'package:weather_app/networking/http.dart';
 import 'package:weather_app/widgets/card_header.dart';

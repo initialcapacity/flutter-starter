@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:weather_app/app_dependencies.dart';
+import 'package:weather_app/app_dependencies/app_dependencies.dart';
 import 'package:weather_app/prelude/time_source.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
