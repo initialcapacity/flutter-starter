@@ -11,7 +11,7 @@ void main(List<String> args) async {
     default:
       throw Exception(
         'Expected exactly only one argument, '
-        'the path to dart package folder as argument',
+            'the path to dart package folder as argument',
       );
   }
 }
