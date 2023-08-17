@@ -62,7 +62,7 @@ extension ResponseHandling on HttpResult<Response> {
           },
           response,
         ),
-      Err(error: final error) => Future.value(Err(error)),
+      Err(:final error) => Future.value(Err(error)),
     };
   }
 }

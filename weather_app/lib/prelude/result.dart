@@ -14,37 +14,37 @@ final class Err<T, E> implements Result<T, E> {
 
 extension ResultExtensions<T, E> on Result<T, E> {
   Result<NewT, E> mapOk<NewT>(NewT Function(T) mapping) => switch (this) {
-        Ok(value: final v) => Ok(mapping(v)),
-        Err(error: final e) => Err(e),
+        Ok(:final value) => Ok(mapping(value)),
+        Err(:final error) => Err(error),
       };
 
   Result<NewT, E> flatMapOk<NewT>(Result<NewT, E> Function(T) mapping) => switch (this) {
-        Ok(value: final v) => mapping(v),
-        Err(error: final e) => Err(e),
+        Ok(:final value) => mapping(value),
+        Err(:final error) => Err(error),
       };
 
   Result<T, NewE> mapErr<NewE>(NewE Function(E) mapping) => switch (this) {
-        Ok(value: final v) => Ok(v),
-        Err(error: final e) => Err(mapping(e)),
+        Ok(:final value) => Ok(value),
+        Err(:final error) => Err(mapping(error)),
       };
 
   Result<T, NewE> flatMapErr<NewE>(Result<T, NewE> Function(E) mapping) => switch (this) {
-        Ok(value: final v) => Ok(v),
-        Err(error: final e) => mapping(e),
+        Ok(:final value) => Ok(value),
+        Err(:final error) => mapping(error),
       };
 
   T orElse(T Function(E) mapping) => switch (this) {
-        Ok(value: final v) => v,
-        Err(error: final e) => mapping(e),
+        Ok(:final value) => value,
+        Err(:final error) => mapping(error),
       };
 
-  bool isOkWith(T value) => switch (this) {
-        Ok(value: final v) => v == value,
+  bool isOkWith(T expectedValue) => switch (this) {
+        Ok(:final value) => value == expectedValue,
         Err(error: _) => false,
       };
 
-  bool isErrWith(E error) => switch (this) {
+  bool isErrWith(E expectedError) => switch (this) {
         Ok(value: _) => false,
-        Err(error: final e) => e == error,
+        Err(:final error) => error == expectedError,
       };
 }

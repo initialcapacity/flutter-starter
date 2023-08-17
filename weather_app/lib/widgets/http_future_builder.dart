@@ -16,8 +16,8 @@ final class HttpFutureBuilder<T> extends StatelessWidget {
         future: future,
         builder: (context, snapshot) => switch (snapshot.data) {
           null => _loadingWidget(),
-          Ok(value: final value) => builder(context, value),
-          Err(error: final err) => _errorWidget(err),
+          Ok(:final value) => builder(context, value),
+          Err(:final error) => _errorWidget(error),
         },
       );
 
