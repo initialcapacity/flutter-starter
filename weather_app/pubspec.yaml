@@ -11,6 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  cyclic_dependency_checks:
+    git:
+      url: https://github.com/dam5s/cyclic_dependency_checks.git
+      ref: release/0.1.0
+
   cupertino_icons: ^1.0.2
   http: ^1.1.0
   provider: ^6.0.5

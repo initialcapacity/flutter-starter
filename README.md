@@ -50,44 +50,23 @@ dependency injection and predictable testing of API integrations.
 * Select in Android Studio's device list
 * Run `main.dart`
 
-## Running tests
+## Running checks
 
-```
-make test
-```
-
-## Formatting
-
-We use a line length of `100` characters, which is good enough to show two files side by side on a modern 27 inch
-screen.
-Line length can be set in Android Studio `Preferences > Editor > Code Style > Dart`.
-
-```
-make format
-```
-
-If your prefer a different line length, feel free to update the `Makefile` to your team's liking
-and have developers configure their IDE as well.
-
-## Checking for cyclic dependencies
-
-Make sure your imports are relative only for files in the same folder, otherwise use `package:` imports.
-Run the make task for checking cycles:
-
-```
-make check-cycles
-```
-
-## Check before push
-
-To check formatting, cyclic dependencies and run tests before pushing your code
+This checks formatting, runs tests and checks for dependency cycles
 
 ```
 make check
 ```
 
-or
+### Formatting
 
-```
-make
-```
+We use a line length of `100` characters, which is good enough to show two files side by side on a modern 27 inch
+screen.
+Line length can be set in Android Studio `Preferences > Editor > Code Style > Dart`.
+
+If your prefer a different line length, feel free to update the `Tasks.mk` to your team's liking
+and have developers configure their IDE as well.
+
+### Cyclic dependencies
+
+Make sure your imports are relative only for files in the same folder, otherwise use `package:` imports.

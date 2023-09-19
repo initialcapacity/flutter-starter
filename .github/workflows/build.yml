@@ -4,13 +4,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
-      - name: 'Checkout code'
-        uses: actions/checkout@v3
-
-      - name: 'Tests'
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.x'
           channel: 'stable'
-      - run: make
+      - run: make install
+      - run: make check
