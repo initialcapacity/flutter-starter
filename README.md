@@ -21,7 +21,6 @@ dependency injection and predictable testing of API integrations.
 
 ## Dev Environment setup
 
-* Install [Dart](https://dart.dev/)
 * Install [Flutter](https://flutter.dev/)
 * Install [Android Studio](https://developer.android.com/studio) with Flutter and Dart plugins
 * Install [XCode](https://developer.apple.com/xcode/) for iOS dev
